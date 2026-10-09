@@ -57,17 +57,110 @@ Production check: `npm run build && npm start`. Other scripts: `npm run typechec
 | `/import` | WhatsApp chat import (local parser) |
 | `/notifications`, `/settings`, `/venues` | Alerts, profile/preferences/reset, venue console |
 
+## System Architecture & Flow Diagrams
+
+### End-to-End User Flow
+```mermaid
+flowchart TD
+    subgraph S1["1. Propose & Brainstorm"]
+        A["WhatsApp Chat Export / Manual Input"] --> B["Smart Idea Extraction & Venue Match"]
+        B --> C["Plan Workspace Created (Draft / Voting)"]
+    end
+
+    subgraph S2["2. Decide (Fair Voting & Constraints)"]
+        C --> D["Availability Heatmap (Best Slot Search)"]
+        C --> E["Anonymous Budget Constraint Matching"]
+        C --> F["Blind Ranked Voting (Love / Okay / Veto)"]
+        D & E & F --> G["Winner Calculation (5% Tie-Breaker Algorithm)"]
+    end
+
+    subgraph S3["3. Commit & Advance Payment (USP)"]
+        G --> H["Dynamic Per-Person Share Calculation"]
+        H --> I["Members Pay Advance (Simulated UPI Hold)"]
+        I -->|Quorum Met Before Deadline| J["Auto-Confirm Plan & Rebalance Refunds"]
+        I -->|Deadline Passes Without Quorum| K["Auto-Release Holds & Cancel Plan"]
+    end
+
+    subgraph S4["4. Event Day & Execution"]
+        J --> L["Live Itinerary & Schedule"]
+        L --> M["ETA Updates ('I will be late') & Location Pin"]
+        L --> N["Shared Photo Wall"]
+    end
+
+    subgraph S5["5. Bill Split & Settlement"]
+        N --> O["Receipt Scanning & Itemized Line OCR"]
+        O --> P["Interactive Face-Tapping Bill Split"]
+        P --> Q["Minimum Cash Flow Settlement (Debt Simplifier)"]
+        Q --> R["1-Click UPI Payment Links & QR Codes"]
+        R --> S["In-Browser Canvas Recap Video (.webm)"]
+    end
+```
+
+### System Architecture
+```mermaid
+graph TB
+    subgraph UI["Presentation Layer (Next.js 16 App Router & React 19)"]
+        P_Landing["Landing & Onboarding (/start, /join)"]
+        P_Dash["Dashboard & Plan Hub (/dashboard, /create)"]
+        P_Workspace["Plan Workspaces (/p/[planId]/*)"]
+        P_Tools["Voice Room, Bill Split, Settlement, Video Summary"]
+        UI_Components["Design System Primitives (Radix UI, Phosphor Icons, Tailwind CSS 4, Motion)"]
+    end
+
+    subgraph STATE["State & Persistence Layer"]
+        Store["Zustand Client Store (demo-store.ts)"]
+        Storage[("Browser LocalStorage (Hydration & Persistence)")]
+        Seed["Deterministic Mock Scenario Seed (seed.ts)"]
+        Store <--> Storage
+        Seed -.-> Store
+    end
+
+    subgraph LOGIC["Calculation & Business Logic Core (src/lib/calc/*)"]
+        C_Vote["voting.ts<br/>• Borda Count<br/>• 5% Tie-breaker<br/>• Veto Checks"]
+        C_Avail["availability.ts<br/>• Slot Overlaps<br/>• Required Attendee Filter"]
+        C_Budget["budget.ts<br/>• Anonymized Bounds<br/>• Feasibility Score"]
+        C_Pay["payments.ts<br/>• Dynamic Share Divisor<br/>• Auto-Refund Balance"]
+        C_Bill["bill.ts<br/>• Item Splitter<br/>• Tax & Tip Distribution"]
+        C_Settle["settle.ts<br/>• Min-Transfers Algorithm<br/>• Debt Simplification"]
+    end
+
+    subgraph UTILS["Platform Integrations & Utilities (src/lib/*)"]
+        U_Chat["chat-parser.ts (WhatsApp iOS/Android Export Parser)"]
+        U_Share["share.ts (UPI Links, QR Codes, iCal .ics, WhatsApp)"]
+        U_Video["SummaryVideo.tsx (HTML5 Canvas + MediaRecorder API)"]
+    end
+
+    UI --> Store
+    Store --> LOGIC
+    UI --> UTILS
+```
+
+### Plan State Machine Lifecycle
+```mermaid
+stateDiagram-v2
+    [*] --> voting: Plan Created
+    voting --> collecting: Winner Picked / Voting Closed
+    collecting --> confirmed: Advance Quorum Met
+    collecting --> not_confirmed: Deadline Passed (Funds Released)
+    confirmed --> event_day: Event Date Reached
+    event_day --> settling: Event Concluded / Bill Uploaded
+    settling --> completed: All Debts Settled
+    completed --> [*]
+    not_confirmed --> [*]
+```
+
 ## Architecture
 
 - **Next.js 16 App Router + React 19 + TypeScript (strict) + Tailwind CSS 4**, `motion`, Phosphor icons, Radix (dialog, dropdown, switch, slider), `zustand` (persisted store), `qrcode`.
 - No API routes, server actions or backend services.
-- `src/app/globals.css` — DESIGN.md tokens (`@theme`), `bg-dots`, `bg-speed`, `skeleton`, motion.
+- `src/app/globals.css` — Design tokens (`@theme`), `bg-dots`, `bg-speed`, `skeleton`, motion.
 - `src/lib/store/demo-store.ts` — single source of truth; all actions; `localStorage` persistence with safe hydration.
 - `src/lib/mock-data/seed.ts` — deterministic scenario (10 people, 6 plans in every status).
 - `src/lib/calc/*` — the documented business rules: voting score (§13.2), budget privacy (§13.3), best slot, share/refund maths (§9.1), bill split (§13.6), minimum transfers (§13.5).
 - `src/lib/chat-parser.ts` — Android + iPhone WhatsApp export parser, noise filter, keyword extraction.
 - `src/lib/share.ts` — UPI deep links, `.ics`, Google Calendar, WhatsApp share, image downscaling.
 - `src/components/ui/*` — design-system components; `src/features/*` — feature components.
+
 
 ## Real vs simulated
 
