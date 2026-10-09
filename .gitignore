@@ -6,3 +6,4 @@ next-env.d.ts
 .env*
 DESIGN.md
 allaboutourproject (3).md
+.claude/
