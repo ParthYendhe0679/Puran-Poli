@@ -1,0 +1,2465 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}</style>
+<title>Group Event Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --ground: #e4eaf3;
+  --surface: #ffffff;
+  --surface-2: #f6f4fb;
+  --ink: #1c1b2b;
+  --ink-2: #3d3b52;
+  --muted: #676381;
+  --line: #e4e2ee;
+  --accent: #7b5cf0;
+  --accent-ink: #5b3dd6;
+  --accent-soft: #ece5fe;
+  --hero-a: #d6c9fb;
+  --hero-b: #efe9fe;
+  --pill: #ffffff;
+  --code-bg: #f3f1fa;
+  --shadow: 0 24px 48px -30px rgb(62 44 130 / 0.35);
+  --font-display: 'Unbounded', 'Poppins', system-ui, sans-serif;
+  --font-body: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ground: #111018;
+    --surface: #1a1924;
+    --surface-2: #22202e;
+    --ink: #eceaf6;
+    --ink-2: #cfcbe2;
+    --muted: #a29ebb;
+    --line: #2e2b3d;
+    --accent: #a891f2;
+    --accent-ink: #bba8ff;
+    --accent-soft: #2a2444;
+    --hero-a: #30285a;
+    --hero-b: #1f1b36;
+    --pill: #2b2940;
+    --code-bg: #24222f;
+    --shadow: 0 24px 48px -30px rgb(0 0 0 / 0.7);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground: #111018;
+  --surface: #1a1924;
+  --surface-2: #22202e;
+  --ink: #eceaf6;
+  --ink-2: #cfcbe2;
+  --muted: #a29ebb;
+  --line: #2e2b3d;
+  --accent: #a891f2;
+  --accent-ink: #bba8ff;
+  --accent-soft: #2a2444;
+  --hero-a: #30285a;
+  --hero-b: #1f1b36;
+  --pill: #2b2940;
+  --code-bg: #24222f;
+  --shadow: 0 24px 48px -30px rgb(0 0 0 / 0.7);
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  padding-inline: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+.shell {
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-block: 24px 64px;
+  display: grid;
+  gap: 24px;
+}
+.toc { display: none; }
+.doc {
+  min-width: 0;
+  background: var(--surface);
+  border-radius: 32px;
+  padding: clamp(18px, 4.5vw, 56px);
+  box-shadow: var(--shadow);
+}
+.hero {
+  display: grid;
+  gap: 18px;
+  padding: clamp(22px, 4vw, 40px);
+  border-radius: 28px;
+  background: linear-gradient(140deg, var(--hero-a), var(--hero-b));
+}
+.hero-top { display: flex; align-items: center; gap: 14px; }
+.mark { width: 52px; height: 52px; flex: none; filter: drop-shadow(0 8px 12px rgb(106 72 228 / 0.35)); }
+.eyebrow {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.hero h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(38px, 7vw, 64px);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.tagline {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(17px, 2.4vw, 22px);
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.summary { margin: 0; max-width: 64ch; color: var(--ink-2); }
+.row-label {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.journey { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; margin: 0; padding: 0; list-style: none; }
+.journey .step { padding: 3px 12px; border-radius: 999px; background: var(--pill); font-size: 13px; font-weight: 500; }
+.journey .arrow { color: var(--muted); font-size: 13px; padding-inline: 2px; }
+.stack { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.stack li {
+  padding: 3px 11px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--accent) 40%, transparent);
+  color: var(--accent-ink);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.toc-mobile {
+  margin-top: 20px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface-2);
+}
+.toc-mobile summary {
+  cursor: pointer;
+  padding: 14px 18px;
+  font-weight: 600;
+  list-style: none;
+}
+.toc-mobile summary::-webkit-details-marker { display: none; }
+.toc-mobile summary::after { content: '+'; float: right; color: var(--muted); font-weight: 500; }
+.toc-mobile[open] summary::after { content: '\2212'; }
+.toc-mobile ol, .toc ol { list-style: none; margin: 0; padding: 0 8px 10px; display: grid; gap: 2px; }
+.toc-mobile a, .toc a {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  color: var(--ink-2);
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.toc-mobile a:hover, .toc a:hover { background: var(--accent-soft); }
+.n { color: var(--muted); font-variant-numeric: tabular-nums; }
+.toc a[aria-current="true"] { background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
+.toc a[aria-current="true"] .n { color: var(--accent-ink); }
+.prose { margin-top: 12px; }
+.prose > * { max-width: 74ch; }
+.prose > .table-wrap, .prose > pre { max-width: none; }
+.prose h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 64px 0 16px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(21px, 3vw, 28px);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  scroll-margin-top: 24px;
+}
+.prose h2 .sec {
+  flex: none;
+  min-width: 2.1em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-size: 0.58em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  transform: translateY(-0.2em);
+}
+.prose h3 { margin: 36px 0 10px; font-size: 19px; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; text-wrap: balance; scroll-margin-top: 24px; }
+.prose h4 { margin: 24px 0 8px; font-size: 16px; font-weight: 600; }
+.prose p { margin: 0 0 14px; }
+.prose ul, .prose ol { margin: 0 0 16px; padding-left: 22px; }
+.prose li { margin: 4px 0; }
+.prose li > ul, .prose li > ol { margin: 4px 0 6px; }
+.prose li::marker { color: var(--accent); }
+.prose strong { font-weight: 600; }
+.prose a { color: var(--accent-ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.prose a:focus-visible, .toc a:focus-visible, .toc-mobile a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.prose code { font-family: var(--font-mono); font-size: 0.86em; padding: 1px 6px; border-radius: 6px; background: var(--code-bg); overflow-wrap: anywhere; }
+.prose pre {
+  margin: 0 0 18px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: var(--code-bg);
+  overflow-x: auto;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.prose pre code { padding: 0; background: none; font-size: inherit; overflow-wrap: normal; }
+.prose blockquote { margin: 0 0 18px; padding: 18px 22px; border-radius: 20px; background: var(--accent-soft); }
+.prose blockquote p:last-child, .prose blockquote ol:last-child { margin-bottom: 0; }
+.prose blockquote.ps { background: var(--surface-2); border: 1px solid var(--line); font-size: 15px; }
+.ps-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.table-wrap { margin: 0 0 20px; border: 1px solid var(--line); border-radius: 18px; overflow-x: auto; }
+.table-wrap table { width: 100%; min-width: 580px; border-collapse: collapse; font-size: 14px; line-height: 1.55; font-variant-numeric: tabular-nums; }
+.table-wrap th, .table-wrap td { padding: 11px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+.table-wrap th { background: var(--surface-2); font-size: 13px; font-weight: 600; }
+.table-wrap tr:last-child td { border-bottom: 0; }
+.prose li:has(> input[type="checkbox"]) { position: relative; list-style: none; margin-left: -22px; padding-left: 30px; }
+.prose li > input[type="checkbox"] {
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  appearance: none;
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  background: var(--surface);
+}
+.foot { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+@media (min-width: 1080px) {
+  .shell { grid-template-columns: 256px minmax(0, 1fr); gap: 28px; align-items: start; }
+  .toc {
+    display: block;
+    position: sticky;
+    top: calc(env(safe-area-inset-top, 0px) + 24px);
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    padding: 18px 12px;
+    border-radius: 24px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+  }
+  .toc .row-label { padding: 0 10px; }
+  .toc ol { padding: 0; }
+  .toc a { font-size: 13px; }
+  .toc-mobile { display: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.facts li { padding: 10px 14px; border-radius: 16px; background: var(--pill); font-size: 13.5px; line-height: 1.45; }
+.facts b { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.stack li.free { background: var(--accent); color: #fff; border-color: transparent; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="toc" aria-label="Contents">
+    <p class="row-label">Contents</p>
+    <ol>
+<li><a href="#1-project-summary"><span class="n">1</span><span>Project summary</span></a></li>
+<li><a href="#2-the-problem-statement-exact-words-and-explanation"><span class="n">2</span><span>The problem statement (exact words and explanation)</span></a></li>
+<li><a href="#3-facts-and-research-that-support-the-problem"><span class="n">3</span><span>Facts and research that support the problem</span></a></li>
+<li><a href="#4-three-main-reasons-group-plans-fail"><span class="n">4</span><span>Three main reasons group plans fail</span></a></li>
+<li><a href="#5-target-users"><span class="n">5</span><span>Target users</span></a></li>
+<li><a href="#6-existing-solutions-and-their-limitations"><span class="n">6</span><span>Existing solutions and their limitations</span></a></li>
+<li><a href="#7-our-solution-the-complete-process"><span class="n">7</span><span>Our solution: the complete process</span></a></li>
+<li><a href="#8-required-features-from-the-problem-statement"><span class="n">8</span><span>Required features (from the problem statement)</span></a></li>
+<li><a href="#9-main-features-detailed-explanation"><span class="n">9</span><span>Main features (detailed explanation)</span></a></li>
+<li><a href="#10-review-of-the-teams-suggested-features"><span class="n">10</span><span>Review of the team&#39;s suggested features</span></a></li>
+<li><a href="#11-additional-features-if-time-allows"><span class="n">11</span><span>Additional features (if time allows)</span></a></li>
+<li><a href="#12-audio-and-video-features-summary"><span class="n">12</span><span>Audio and video features (summary)</span></a></li>
+<li><a href="#13-how-the-technical-parts-work"><span class="n">13</span><span>How the technical parts work</span></a></li>
+<li><a href="#14-ai-plan-groq-free-tier"><span class="n">14</span><span>AI plan (Groq, free tier)</span></a></li>
+<li><a href="#15-payment-plan-free-for-the-hackathon"><span class="n">15</span><span>Payment plan (free for the hackathon)</span></a></li>
+<li><a href="#16-final-tech-stack-all-free"><span class="n">16</span><span>Final tech stack (all free)</span></a></li>
+<li><a href="#17-system-architecture"><span class="n">17</span><span>System architecture</span></a></li>
+<li><a href="#18-folder-structure"><span class="n">18</span><span>Folder structure</span></a></li>
+<li><a href="#19-database-design"><span class="n">19</span><span>Database design</span></a></li>
+<li><a href="#20-api-design"><span class="n">20</span><span>API design</span></a></li>
+<li><a href="#21-preparation-for-the-convergence-round"><span class="n">21</span><span>Preparation for the Convergence Round</span></a></li>
+<li><a href="#22-list-of-screens"><span class="n">22</span><span>List of screens</span></a></li>
+<li><a href="#23-ui-and-ux-design"><span class="n">23</span><span>UI and UX design</span></a></li>
+<li><a href="#24-ppt-round-1-content-for-the-6-slides"><span class="n">24</span><span>PPT Round 1: content for the 6 slides</span></a></li>
+<li><a href="#25-demo-script-for-round-2-5-minutes"><span class="n">25</span><span>Demo script for Round 2 (5 minutes)</span></a></li>
+<li><a href="#26-business-model-and-impact"><span class="n">26</span><span>Business model and impact</span></a></li>
+<li><a href="#27-pitch-guidelines-and-judge-questions"><span class="n">27</span><span>Pitch guidelines and judge questions</span></a></li>
+<li><a href="#28-24-hour-build-plan-and-team-roles"><span class="n">28</span><span>24-hour build plan and team roles</span></a></li>
+<li><a href="#29-college-survey-for-real-numbers-in-the-ppt"><span class="n">29</span><span>College survey (for real numbers in the PPT)</span></a></li>
+<li><a href="#30-risks-and-backup-plans"><span class="n">30</span><span>Risks and backup plans</span></a></li>
+<li><a href="#31-glossary"><span class="n">31</span><span>Glossary</span></a></li>
+<li><a href="#32-sources"><span class="n">32</span><span>Sources</span></a></li>
+    </ol>
+  </nav>
+  <main class="doc">
+    <header class="hero">
+      <div class="hero-top">
+        <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
+          <defs><linearGradient id="mk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a58cff"/><stop offset="1" stop-color="#6a48e4"/></linearGradient></defs>
+          <rect x="4" y="4" width="56" height="56" rx="18" fill="url(#mk)"/>
+          <circle cx="32" cy="32" r="17" fill="#fff6e6"/>
+          <circle cx="32" cy="32" r="13" fill="none" stroke="#1c1b22" stroke-width="2" stroke-dasharray="3 3"/>
+          <path d="M24.5 32.5l5 5 10-11" fill="none" stroke="#1c1b22" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p class="eyebrow">CodeAstra 2.0 · RGIT Mumbai · Updated 9 Oct 2026</p>
+      </div>
+      <h1>Group Event Planning Platform</h1>
+      <p class="tagline">Suggest ideas, vote, pay your share in advance and confirm the plan in one place.</p>
+      <p class="summary">A website where a group of friends suggests event ideas, votes on them, chooses a common time and splits the costs. Members join a plan by paying their share in advance. The payment is held, not charged. The plan is confirmed automatically when a minimum number of members have paid. If the minimum is not reached by the deadline, every payment is released automatically.</p>
+      <ul class="facts">
+        <li><b>Problem statement</b>A website where a group can propose event ideas, vote, split costs, and finalize plans without endless group-chat back-and-forth</li>
+        <li><b>Round 1</b>Online PPT, maximum 6 slides. Entry deadline: Tuesday, 13 October 2026</li>
+        <li><b>Round 2</b>24-hour offline hackathon at RGIT, including a Convergence Round</li>
+        <li><b>Judged on</b>Problem, Solution, Innovation, Feasibility, Impact</li>
+      </ul>
+      <div>
+        <p class="row-label">The 8 steps of a plan</p>
+        <ol class="journey"><li class="step">Propose</li><li class="arrow" aria-hidden="true">→</li><li class="step">Decide</li><li class="arrow" aria-hidden="true">→</li><li class="step">Pay</li><li class="arrow" aria-hidden="true">→</li><li class="step">Confirm</li><li class="arrow" aria-hidden="true">→</li><li class="step">Remind</li><li class="arrow" aria-hidden="true">→</li><li class="step">Event day</li><li class="arrow" aria-hidden="true">→</li><li class="step">Split the bill</li><li class="arrow" aria-hidden="true">→</li><li class="step">Event summary</li></ol>
+      </div>
+      <div>
+        <p class="row-label">Tech stack</p>
+        <ul class="stack"><li>Next.js</li><li>Tailwind CSS</li><li>Go</li><li>PostgreSQL</li><li>Groq</li><li>LiveKit</li><li>Razorpay test</li><li>UPI links</li><li>OpenStreetMap</li><li class="free">Running cost: ₹0</li></ul>
+      </div>
+    </header>
+    <details class="toc-mobile">
+      <summary>Contents · 32 sections</summary>
+      <ol>
+<li><a href="#1-project-summary"><span class="n">1</span><span>Project summary</span></a></li>
+<li><a href="#2-the-problem-statement-exact-words-and-explanation"><span class="n">2</span><span>The problem statement (exact words and explanation)</span></a></li>
+<li><a href="#3-facts-and-research-that-support-the-problem"><span class="n">3</span><span>Facts and research that support the problem</span></a></li>
+<li><a href="#4-three-main-reasons-group-plans-fail"><span class="n">4</span><span>Three main reasons group plans fail</span></a></li>
+<li><a href="#5-target-users"><span class="n">5</span><span>Target users</span></a></li>
+<li><a href="#6-existing-solutions-and-their-limitations"><span class="n">6</span><span>Existing solutions and their limitations</span></a></li>
+<li><a href="#7-our-solution-the-complete-process"><span class="n">7</span><span>Our solution: the complete process</span></a></li>
+<li><a href="#8-required-features-from-the-problem-statement"><span class="n">8</span><span>Required features (from the problem statement)</span></a></li>
+<li><a href="#9-main-features-detailed-explanation"><span class="n">9</span><span>Main features (detailed explanation)</span></a></li>
+<li><a href="#10-review-of-the-teams-suggested-features"><span class="n">10</span><span>Review of the team&#39;s suggested features</span></a></li>
+<li><a href="#11-additional-features-if-time-allows"><span class="n">11</span><span>Additional features (if time allows)</span></a></li>
+<li><a href="#12-audio-and-video-features-summary"><span class="n">12</span><span>Audio and video features (summary)</span></a></li>
+<li><a href="#13-how-the-technical-parts-work"><span class="n">13</span><span>How the technical parts work</span></a></li>
+<li><a href="#14-ai-plan-groq-free-tier"><span class="n">14</span><span>AI plan (Groq, free tier)</span></a></li>
+<li><a href="#15-payment-plan-free-for-the-hackathon"><span class="n">15</span><span>Payment plan (free for the hackathon)</span></a></li>
+<li><a href="#16-final-tech-stack-all-free"><span class="n">16</span><span>Final tech stack (all free)</span></a></li>
+<li><a href="#17-system-architecture"><span class="n">17</span><span>System architecture</span></a></li>
+<li><a href="#18-folder-structure"><span class="n">18</span><span>Folder structure</span></a></li>
+<li><a href="#19-database-design"><span class="n">19</span><span>Database design</span></a></li>
+<li><a href="#20-api-design"><span class="n">20</span><span>API design</span></a></li>
+<li><a href="#21-preparation-for-the-convergence-round"><span class="n">21</span><span>Preparation for the Convergence Round</span></a></li>
+<li><a href="#22-list-of-screens"><span class="n">22</span><span>List of screens</span></a></li>
+<li><a href="#23-ui-and-ux-design"><span class="n">23</span><span>UI and UX design</span></a></li>
+<li><a href="#24-ppt-round-1-content-for-the-6-slides"><span class="n">24</span><span>PPT Round 1: content for the 6 slides</span></a></li>
+<li><a href="#25-demo-script-for-round-2-5-minutes"><span class="n">25</span><span>Demo script for Round 2 (5 minutes)</span></a></li>
+<li><a href="#26-business-model-and-impact"><span class="n">26</span><span>Business model and impact</span></a></li>
+<li><a href="#27-pitch-guidelines-and-judge-questions"><span class="n">27</span><span>Pitch guidelines and judge questions</span></a></li>
+<li><a href="#28-24-hour-build-plan-and-team-roles"><span class="n">28</span><span>24-hour build plan and team roles</span></a></li>
+<li><a href="#29-college-survey-for-real-numbers-in-the-ppt"><span class="n">29</span><span>College survey (for real numbers in the PPT)</span></a></li>
+<li><a href="#30-risks-and-backup-plans"><span class="n">30</span><span>Risks and backup plans</span></a></li>
+<li><a href="#31-glossary"><span class="n">31</span><span>Glossary</span></a></li>
+<li><a href="#32-sources"><span class="n">32</span><span>Sources</span></a></li>
+      </ol>
+    </details>
+    <article class="prose">
+<h2 id="1-project-summary"><span class="sec">1</span><span>Project summary</span></h2>
+<h3 id="11-what-we-are-building">1.1 What we are building</h3>
+<p>We are building a website that helps a group of friends plan an event together. The website covers the full process, from the first idea to the final payment.</p>
+<p>A group uses the website in this order:</p>
+<ol>
+<li><strong>Suggest ideas.</strong> Any member can add an event idea, for example &quot;Bowling at Andheri, ₹600 per person&quot;. Members can also upload their exported WhatsApp group chat, and the website will find the ideas that were already discussed in the chat.</li>
+<li><strong>Choose a time.</strong> Each member marks the hours when they are free. The website shows the time slot when the most members are free.</li>
+<li><strong>Vote.</strong> Each member votes on every idea. Voting closes at a fixed deadline, and the website selects one winning idea.</li>
+<li><strong>Pay the share in advance.</strong> Each member who wants to join pays their share. The payment is only held, not charged.</li>
+<li><strong>Confirm the plan.</strong> When a minimum number of members have paid, the plan is confirmed automatically. If the minimum is not reached by the deadline, every held payment is released and returned automatically.</li>
+<li><strong>Split the final bill.</strong> After the event, one member scans the restaurant bill. Each member selects the items they had, and the website calculates how much each person owes and to whom.</li>
+</ol>
+<p>Members join by opening a link shared in their group chat and typing their name. They do not need to install an app or create a password.</p>
+<h3 id="12-our-main-difference-usp">1.2 Our main difference (USP)</h3>
+<blockquote>
+<p><strong>A plan is confirmed only after a minimum number of members have paid their share in advance.</strong></p>
+<p>In a group chat, saying &quot;I am coming&quot; has no cost, so many people agree and later drop out. On our website, a member joins a plan by paying their share. The money is held, not charged, until the plan is confirmed. If enough members pay before the deadline, the plan is confirmed and the payments are completed. If not enough members pay, every payment is released automatically, so nobody loses money. This reduces last-minute dropouts, and no single member has to collect money from everyone else.</p>
+</blockquote>
+<h3 id="13-what-we-will-show-the-judges">1.3 What we will show the judges</h3>
+<ol>
+<li><strong>WhatsApp chat import:</strong> we upload a real exported group chat of about 200 messages. The website lists the event ideas that were discussed in it, with the name of the person who suggested each idea.</li>
+<li><strong>Plan confirmation by payment:</strong> members pay their share using Razorpay test mode. When the last required member pays, the plan status changes to &quot;Confirmed&quot; on every member&#39;s screen at the same time.</li>
+<li><strong>Voice discussion room:</strong> two members discuss the plan by voice for one minute. The website converts the speech to text and adds the ideas, votes and time preferences to the plan automatically.</li>
+</ol>
+<hr>
+<h2 id="2-the-problem-statement-exact-words-and-explanation"><span class="sec">2</span><span>The problem statement (exact words and explanation)</span></h2>
+<h3 id="21-the-official-problem-statement">2.1 The official problem statement</h3>
+<blockquote class="ps"><p class="ps-label">Official problem statement</p>
+<p>A website where a group can propose event ideas, vote, split costs, and finalize plans without endless group-chat back-and-forth.</p>
+</blockquote>
+<h3 id="22-explanation-of-each-part">2.2 Explanation of each part</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Part of the problem statement</th>
+<th>Meaning</th>
+<th>What our website must provide</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;A website&quot;</td>
+<td>The solution must work in a web browser. Users should not need to install an app.</td>
+<td>A website that works well on mobile phones and laptops</td>
+</tr>
+<tr>
+<td>&quot;where a group&quot;</td>
+<td>Several people use it together, at the same time.</td>
+<td>Changes made by one member appear on all members&#39; screens immediately</td>
+</tr>
+<tr>
+<td>&quot;can propose event ideas&quot;</td>
+<td>Any member of the group can suggest an idea.</td>
+<td>Idea cards with place, cost per person, time, link and photo</td>
+</tr>
+<tr>
+<td>&quot;vote&quot;</td>
+<td>The group chooses one idea in a fair way.</td>
+<td>A voting system that ends with one clear result</td>
+</tr>
+<tr>
+<td>&quot;split costs&quot;</td>
+<td>The cost must be divided fairly between members.</td>
+<td>Cost per person, record of who paid, and who owes whom</td>
+</tr>
+<tr>
+<td>&quot;and finalize plans&quot;</td>
+<td>The plan must end as a fixed decision.</td>
+<td>A final plan page with the idea, date, time, place, members and cost</td>
+</tr>
+<tr>
+<td>&quot;without endless group-chat back-and-forth&quot;</td>
+<td>The main goal is fewer messages and faster decisions.</td>
+<td>Deadlines for every step, automatic reminders and a clear status for each member</td>
+</tr>
+</tbody></table></div>
+<h3 id="23-the-question-behind-the-problem-statement">2.3 The question behind the problem statement</h3>
+<p>The problem statement asks for four actions: propose, vote, split costs and finalize. Many apps already provide these actions separately. For a strong solution, we must also answer a deeper question:</p>
+<blockquote>
+<p><strong>Why do group plans often fail even when most members want to go?</strong></p>
+</blockquote>
+<p>Section 4 answers this question. Each of our main features is designed to fix one of the reasons.</p>
+<h3 id="24-how-our-website-covers-every-requirement">2.4 How our website covers every requirement</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>How our website does it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Propose event ideas</td>
+<td>Idea cards, AI-suggested ideas based on the group&#39;s interests, and WhatsApp chat import</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Fair Voting: three vote options, a deadline, hidden results until you vote, one veto per member, and a tie-breaking rule</td>
+</tr>
+<tr>
+<td>Choose a time</td>
+<td>Availability Heatmap: members mark their free hours and the website shows the best slot</td>
+</tr>
+<tr>
+<td>Split costs before the event</td>
+<td>Plan Confirmation by Advance Payment: each member&#39;s share is collected before booking</td>
+</tr>
+<tr>
+<td>Split costs after the event</td>
+<td>Receipt Scanner with Item-wise Split, settlement in the minimum number of payments, and UPI payment links</td>
+</tr>
+<tr>
+<td>Finalize plans</td>
+<td>The plan is confirmed automatically when enough members pay, followed by a final plan page and a calendar invite</td>
+</tr>
+<tr>
+<td>Without endless back-and-forth</td>
+<td>Every step has a deadline, the website sends reminders, and the voice discussion room records decisions automatically</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="3-facts-and-research-that-support-the-problem"><span class="sec">3</span><span>Facts and research that support the problem</span></h2>
+<h3 id="31-group-chats-are-difficult-to-manage">3.1 Group chats are difficult to manage</h3>
+<ul>
+<li>In a survey of 1,005 Americans, 42% said managing group chats feels like a part-time job, 66% said they feel overwhelmed by group chats, 75% have muted a group chat, and 55% have left a group chat. On average, people spend about 26 minutes a day reading and replying to group messages. (<a href="https://www.securedatarecovery.com/blog/group-messaging-feels-like-job" target="_blank" rel="noopener noreferrer">Secure Data Recovery survey</a>)</li>
+<li>Researchers note that in large groups, planning inside a chat often turns into many opinions and side conversations, and people who mute the chat miss the final plan. (<a href="https://theconversation.com/overwhelmed-by-group-chat-messages-youre-not-alone-215879" target="_blank" rel="noopener noreferrer">The Conversation</a>)</li>
+</ul>
+<h3 id="32-people-cancel-plans-often">3.2 People cancel plans often</h3>
+<ul>
+<li>In an Ipsos survey of 2,000 Canadians (September 2024), 75% said friends had cancelled plans with them, and 69% said they had cancelled plans with friends themselves. Nearly half of those who cancelled said their reason was made up or only partly true. (<a href="https://www.ipsos.com/en-ca/node/1031526" target="_blank" rel="noopener noreferrer">Ipsos</a>)</li>
+</ul>
+<h3 id="33-shared-money-creates-problems-between-friends">3.3 Shared money creates problems between friends</h3>
+<ul>
+<li>In a Zelle survey (May to June 2026), 76% of Gen Z respondents who paid for a group expense were not fully paid back. 55% said unpaid money created tension or damaged a friendship. 47% said they went into debt covering group expenses. (<a href="https://rethinking65.com/bad-trip-group-expenses-for-shared-experiences-too-often-end-in-nonpayment-avoidance-survey-reveals/" target="_blank" rel="noopener noreferrer">Rethinking65</a>)</li>
+<li>In the same survey, 20% said they cancelled plans or ignored chats to avoid conversations about repayment.</li>
+<li>In a YouTrip survey (September 2026), 1 in 3 respondents had argued with friends over trip expenses, and 21% said they would not travel with the same group again. (<a href="https://alvinology.com/2026/09/20/youtrip-survey-finds-1-in-3-singaporeans-have-argued-over-travel-expenses/" target="_blank" rel="noopener noreferrer">Alvinology</a>)</li>
+</ul>
+<h3 id="34-early-opinions-affect-group-decisions">3.4 Early opinions affect group decisions</h3>
+<ul>
+<li>Research on group discussions shows an effect called &quot;anchoring&quot;: the opinions shared first have a strong influence on the final decision. In a group chat, the first few people who reply often decide the outcome for everyone. (<a href="https://philsci-archive.pitt.edu/13031" target="_blank" rel="noopener noreferrer">Hartmann and Rafiee Rad, Anchoring in Deliberations</a>)</li>
+</ul>
+<h3 id="35-facts-specific-to-india">3.5 Facts specific to India</h3>
+<ul>
+<li>India has about 535.8 million WhatsApp users, so most group plans in India start in a WhatsApp group. (<a href="https://hyperleap.ai/blog/whatsapp-statistics-india-2026" target="_blank" rel="noopener noreferrer">Hyperleap</a>)</li>
+<li>From 1 October 2025, NPCI stopped person-to-person UPI &quot;collect requests&quot; to reduce fraud. A person can no longer send a UPI money request to a friend. The person who owes money must start the payment themselves. (<a href="https://www.theweek.in/wire-updates/business/2025/08/14/dcm65-biz-npci-collect.html" target="_blank" rel="noopener noreferrer">The Week</a>)</li>
+<li>Splitwise&#39;s free plan now allows only about 3 expenses per day, and receipt scanning is available only in the paid plan. (<a href="https://getfinny.app/blog/splitwise-pricing-2026" target="_blank" rel="noopener noreferrer">Finny</a>)</li>
+</ul>
+<h3 id="36-summary-of-the-problem">3.6 Summary of the problem</h3>
+<blockquote>
+<p>Group plans often fail because discussion in the chat does not lead to a clear decision, members can agree without any commitment and later drop out, and collecting money from friends is uncomfortable.</p>
+</blockquote>
+<hr>
+<h2 id="4-three-main-reasons-group-plans-fail"><span class="sec">4</span><span>Three main reasons group plans fail</span></h2>
+<p>Each main feature of our website addresses one of these three reasons.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Reason</th>
+<th>What happens in a group chat</th>
+<th>How our website addresses it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1. Discussion does not lead to a decision</strong></td>
+<td>Many messages, many ideas and several polls, but no deadline. The first people who reply influence everyone else.</td>
+<td>WhatsApp Chat Import, Fair Voting with a deadline and hidden results, Availability Heatmap, Voice Discussion Room</td>
+</tr>
+<tr>
+<td><strong>2. Agreement without commitment</strong></td>
+<td>Ten members say they will come, but only four attend. The cost per person increases for those who attend.</td>
+<td>Plan Confirmation by Advance Payment: a member joins by paying their share, and the plan is confirmed only when enough members pay</td>
+</tr>
+<tr>
+<td><strong>3. Collecting money is uncomfortable</strong></td>
+<td>One member pays for everyone and then has to ask each person for money. Some members cannot afford an idea but do not want to say so in front of the group.</td>
+<td>Private Budget Limits, Receipt Scanner with Item-wise Split, settlement in the minimum number of payments, UPI payment links and automatic reminders</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="5-target-users"><span class="sec">5</span><span>Target users</span></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>User</th>
+<th>Description</th>
+<th>What they need</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Friend groups</strong> (main users)</td>
+<td>College friends, school friends, colleagues, cousins</td>
+<td>A plan that actually takes place, with costs divided fairly</td>
+</tr>
+<tr>
+<td><strong>The organiser</strong></td>
+<td>The member who usually plans the event and pays first</td>
+<td>Answers and payments from members without repeated follow-up</td>
+</tr>
+<tr>
+<td><strong>Members with a limited budget or special needs</strong></td>
+<td>Members with a tight budget, dietary needs or time limits</td>
+<td>A private way to share their limits so the group chooses an idea they can join</td>
+</tr>
+<tr>
+<td><strong>College clubs and committees</strong></td>
+<td>Clubs planning outings, farewells and fest activities</td>
+<td>Collect money in advance, track payments, receive sponsor or venue offers</td>
+</tr>
+<tr>
+<td><strong>Venues</strong> (future)</td>
+<td>Cafes, bowling alleys, sports turfs, gaming zones, resorts</td>
+<td>Group bookings where the members have already paid</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="6-existing-solutions-and-their-limitations"><span class="sec">6</span><span>Existing solutions and their limitations</span></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Type of app</th>
+<th>Examples</th>
+<th>What they do well</th>
+<th>What they do not provide</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Polls inside chat apps</td>
+<td>WhatsApp polls, Instagram polls</td>
+<td>Members already use these apps</td>
+<td>No deadline, no cost information, no time selection, results get lost in the chat</td>
+</tr>
+<tr>
+<td>Time scheduling tools</td>
+<td>When2meet, Doodle, Howbout</td>
+<td>Find a common free time</td>
+<td>Only time selection. No ideas, no voting on activities, no payments</td>
+</tr>
+<tr>
+<td>Event invitation apps</td>
+<td>Partiful, Luma</td>
+<td>Invitations and RSVP lists</td>
+<td>Saying &quot;Going&quot; has no commitment, and there is no cost splitting</td>
+</tr>
+<tr>
+<td>Expense splitting apps</td>
+<td>Splitwise, Tricount, Paytm Split Bills (launched July 2026)</td>
+<td>Record who owes whom</td>
+<td>Used only after money is spent. No voting or planning. Splitwise&#39;s free plan is limited</td>
+</tr>
+<tr>
+<td>Combined planning apps</td>
+<td>PlanEz, Groufr, Frenly, Mission A</td>
+<td>Polls, chat and expenses in one app</td>
+<td>Voting and payment are separate. No commitment step, no private budgets, and users must install an app</td>
+</tr>
+</tbody></table></div>
+<p>Sources: <a href="https://www.tapsmart.com/news/howbout-review/" target="_blank" rel="noopener noreferrer">Howbout</a>, <a href="https://scanx.trade/stock-market-news/companies/paytm-launches-split-bills-feature-to-simplify-group-expense-tracking/46846893" target="_blank" rel="noopener noreferrer">Paytm Split Bills</a>, <a href="https://www.producthunt.com/p/planez" target="_blank" rel="noopener noreferrer">PlanEz</a>, <a href="https://apps.apple.com/app/id6760431486" target="_blank" rel="noopener noreferrer">Groufr</a>, <a href="https://apps.apple.com/us/app/-/id1528072797" target="_blank" rel="noopener noreferrer">Frenly</a>.</p>
+<p><strong>The gap we fill:</strong> In the apps listed above, deciding and paying are two separate activities. In our website, they are connected: after the vote, members join by paying their share, and the plan is confirmed only when enough members have paid.</p>
+<p><strong>Similar models in other industries:</strong> This approach is called an &quot;all-or-nothing&quot; or &quot;minimum participation&quot; model. Kickstarter uses it for crowdfunding: a project receives money only if it reaches its target. Groupon started with a similar rule, where a deal was activated only after a minimum number of people bought it. We apply the same rule to group plans among friends, using Indian payment methods.</p>
+<hr>
+<h2 id="7-our-solution-the-complete-process"><span class="sec">7</span><span>Our solution: the complete process</span></h2>
+<p>The complete process of a plan has eight steps:</p>
+<p><strong>Propose → Decide → Pay → Confirm → Remind → Event day → Split the bill → Event summary</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Step</th>
+<th>What the members do</th>
+<th>Feature used</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. Propose</td>
+<td>Add ideas, upload the WhatsApp chat, or ask the website to suggest ideas</td>
+<td>Idea cards, WhatsApp Chat Import, Suggested Ideas</td>
+</tr>
+<tr>
+<td>2. Decide</td>
+<td>Mark free hours, set a private budget, vote on ideas</td>
+<td>Availability Heatmap, Private Budget Limits, Fair Voting, Voice Discussion Room</td>
+</tr>
+<tr>
+<td>3. Pay</td>
+<td>Pay the share in advance. The payment is held, not charged</td>
+<td>Plan Confirmation by Advance Payment</td>
+</tr>
+<tr>
+<td>4. Confirm</td>
+<td>If the minimum number of members pay, the plan is confirmed. If not, payments are released</td>
+<td>Plan Confirmation by Advance Payment (automatic)</td>
+</tr>
+<tr>
+<td>5. Remind</td>
+<td>Receive a calendar invite and reminders before the event</td>
+<td>Final plan page, browser notifications</td>
+</tr>
+<tr>
+<td>6. Event day</td>
+<td>See the day&#39;s schedule, see who is on the way, share photos</td>
+<td>Event Day Page</td>
+</tr>
+<tr>
+<td>7. Split the bill</td>
+<td>Scan the bill, select the items each member had, pay through UPI</td>
+<td>Receipt Scanner with Item-wise Split</td>
+</tr>
+<tr>
+<td>8. Event summary</td>
+<td>Receive a short video summary of the plan and the event</td>
+<td>Event Summary Video</td>
+</tr>
+</tbody></table></div>
+<p><strong>How members join:</strong> a member opens the shared link, types their name and joins. Google sign-in can be added later for members who want to keep a history of their plans.</p>
+<hr>
+<h2 id="8-required-features-from-the-problem-statement"><span class="sec">8</span><span>Required features (from the problem statement)</span></h2>
+<p>The judges will check these features first. We will tick each one when it is complete.</p>
+<h3 id="81-propose">8.1 Propose</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Create a plan with a name, an approximate date and the expected group size. Receive a share link and a QR code.</li>
+<li><input disabled="" type="checkbox"> Join a plan with only a name (no password).</li>
+<li><input disabled="" type="checkbox"> Add idea cards with a title, place, cost per person, time, link, photo and a short note.</li>
+<li><input disabled="" type="checkbox"> Any member can add ideas until the idea deadline.</li>
+</ul>
+<h3 id="82-vote">8.2 Vote</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Vote on every idea with one of three options: &quot;Love it&quot;, &quot;Okay&quot; or &quot;No&quot;.</li>
+<li><input disabled="" type="checkbox"> A voting deadline with a visible countdown.</li>
+<li><input disabled="" type="checkbox"> Results update live after the member has voted.</li>
+<li><input disabled="" type="checkbox"> One winning idea at the end, with a rule for ties.</li>
+</ul>
+<h3 id="83-choose-a-time">8.3 Choose a time</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Availability Heatmap: members mark their free hours, and the website shows the time slot with the most members available.</li>
+</ul>
+<h3 id="84-split-costs">8.4 Split costs</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Cost per person shown on every idea.</li>
+<li><input disabled="" type="checkbox"> Add expenses with who paid, how much, and how to split (equally or by item).</li>
+<li><input disabled="" type="checkbox"> A list of who owes whom, using the minimum number of payments.</li>
+<li><input disabled="" type="checkbox"> A UPI payment link with the amount filled in.</li>
+</ul>
+<h3 id="85-finalize">8.5 Finalize</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Final plan page with the idea, date, time, place, members and cost per person.</li>
+<li><input disabled="" type="checkbox"> Add to calendar (an .ics file and a Google Calendar link).</li>
+<li><input disabled="" type="checkbox"> Share the final plan to WhatsApp.</li>
+</ul>
+<h3 id="86-reduce-back-and-forth-messages">8.6 Reduce back-and-forth messages</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Every step has a deadline.</li>
+<li><input disabled="" type="checkbox"> Automatic reminders to members who have not voted or paid, so the organiser does not have to remind them.</li>
+<li><input disabled="" type="checkbox"> The final plan page shows how long the decision took, for example &quot;This plan was decided in 2 hours with 6 members.&quot;</li>
+</ul>
+<hr>
+<h2 id="9-main-features-detailed-explanation"><span class="sec">9</span><span>Main features (detailed explanation)</span></h2>
+<p>Each feature is explained in the same format: what it is, the problem it solves, how it works, an example, and how we build it.</p>
+<h3 id="feature-1-plan-confirmation-by-advance-payment-our-usp">Feature 1: Plan Confirmation by Advance Payment (our USP)</h3>
+<p><strong>What it is</strong>
+A member joins a plan by paying their share in advance. The payment is held, not charged. The plan is confirmed automatically when a minimum number of members have paid. If the minimum is not reached by the deadline, every held payment is released and the money returns to the members.</p>
+<p><strong>The problem it solves</strong>
+In a group chat, members can say &quot;I am coming&quot; without any commitment. Many of them drop out later, and the cost per person increases for those who remain. Also, one member usually pays for everyone and then has to collect money from each person.</p>
+<p><strong>How it works</strong></p>
+<ol>
+<li>The organiser sets four values:<ul>
+<li>the total cost (for example, a villa for ₹12,000)</li>
+<li>the minimum number of members needed (for example, 6)</li>
+<li>the maximum number of seats (for example, 10)</li>
+<li>the payment deadline (for example, Friday 8 pm)</li>
+</ul>
+</li>
+<li>The website shows the share per person and a progress bar, for example: &quot;4 of 6 required members have paid. 2 more are needed. Deadline: Friday 8 pm.&quot;</li>
+<li>A member clicks &quot;Join and pay&quot;. The payment is authorised (held) but not taken.</li>
+<li>When the 6th member pays, the website takes all held payments and marks the plan as &quot;Confirmed&quot;. All members are notified at the same time.</li>
+<li>If the deadline passes and fewer than 6 members have paid, the plan is marked &quot;Not confirmed&quot; and all held payments are released automatically.</li>
+<li>If more members join than the minimum, the cost per person decreases. The website first holds the higher share (total cost divided by the minimum number) and later refunds the difference to every member automatically.</li>
+</ol>
+<p><strong>Member status levels</strong>
+Each member has one of three statuses, visible to the group: &quot;Interested&quot;, &quot;Joining&quot; and &quot;Paid&quot;. This shows clearly who has actually committed.</p>
+<p><strong>Example</strong>
+Eight friends plan a villa stay costing ₹12,000. The organiser sets a minimum of 6 members. The share is ₹2,000 per person (₹12,000 ÷ 6). By Thursday, 7 members have paid, so the plan is confirmed. The final share is ₹1,714 per person (₹12,000 ÷ 7), so each of the 7 members automatically receives ₹286 back.</p>
+<p><strong>How we build it</strong></p>
+<ul>
+<li><strong>In the hackathon (free):</strong> Razorpay test mode with &quot;manual capture&quot;. In Razorpay, a payment can stay in the &quot;authorised&quot; state (held) until the merchant &quot;captures&quot; it (takes it). If it is not captured within the allowed time, Razorpay refunds it automatically. The maximum hold time is 5 days. (<a href="https://razorpay.com/docs/payments/payments/capture-settings/" target="_blank" rel="noopener noreferrer">Razorpay documentation</a>)</li>
+<li><strong>In the real product:</strong> UPI Reserve Pay, a UPI feature approved by RBI and operated by NPCI. It blocks an amount of up to ₹10,000 in the customer&#39;s own bank account for up to 90 days. The money is debited only when the plan is confirmed. If the plan is not confirmed, the block is removed. (<a href="https://www.cashfree.com/docs/payments/upi-reserve-pay/reserve-pay" target="_blank" rel="noopener noreferrer">Cashfree documentation</a>)</li>
+<li>A background job in our Go server checks deadlines and confirms or cancels plans automatically.</li>
+</ul>
+<p><strong>Why this is useful</strong>
+The organiser does not have to collect money, members who are not serious do not block the plan, and nobody loses money if the plan does not happen.</p>
+<hr>
+<h3 id="feature-2-whatsapp-chat-import">Feature 2: WhatsApp Chat Import</h3>
+<p><strong>What it is</strong>
+A member uploads the exported WhatsApp group chat (a .txt file). The website reads the messages and creates idea cards for the plans that were discussed in the chat.</p>
+<p><strong>The problem it solves</strong>
+Most group plans start in a WhatsApp group. After many messages, it is difficult to see which ideas were suggested, who supported them and what is still undecided. Members usually have to scroll up and read everything again.</p>
+<p><strong>How it works</strong></p>
+<ol>
+<li>The member exports the chat from WhatsApp (Group → More → Export chat → Without media) and uploads the file.</li>
+<li>Our Go server reads the file and separates each message into date, time, sender and text. It supports the formats used by both Android and iPhone.</li>
+<li>The server removes messages that are not useful, for example &quot;ok&quot;, &quot;haha&quot;, stickers, <code>&lt;Media omitted&gt;</code>, deleted messages and system messages such as &quot;Rohan joined&quot;.</li>
+<li>The remaining messages are sent to the Groq AI model, which returns:<ul>
+<li>each event idea and the person who suggested it</li>
+<li>the members who supported or rejected each idea</li>
+<li>dates and times mentioned by members</li>
+<li>members who already said they will join</li>
+<li>the main point that is still undecided</li>
+</ul>
+</li>
+<li>The website creates the plan with these ideas already added as idea cards.</li>
+</ol>
+<p><strong>Example</strong>
+A group chat has 212 messages about a weekend plan. After the upload, the website shows four idea cards: &quot;Bowling at Andheri (suggested by Rohan, supported by 4 members)&quot;, &quot;Turf football&quot;, &quot;Movie at PVR&quot; and &quot;Lonavala day trip&quot;. It also shows a note: &quot;Most members prefer bowling. Saturday or Sunday is not decided yet.&quot;</p>
+<p><strong>Privacy</strong>
+The chat file is processed once and then deleted. Only the idea cards are saved. If a member mentioned their budget in the chat (for example, &quot;I cannot spend more than ₹500&quot;), that number is not shown to the group. It is shown only to that member as a suggestion for their private budget (Feature 3).</p>
+<p><strong>How we build it</strong>
+A parser written in Go for the chat format, and the Groq model <code>openai/gpt-oss-20b</code> with strict JSON mode, which makes the AI return data in an exact format that our code can read.</p>
+<hr>
+<h3 id="feature-3-private-budget-limits">Feature 3: Private Budget Limits</h3>
+<p><strong>What it is</strong>
+Each member privately enters the maximum amount they can spend and any conditions they have. Other members never see these values. The website uses them to show which ideas suit everyone.</p>
+<p><strong>The problem it solves</strong>
+Some members cannot afford an expensive idea but do not want to say so in front of the group. They either stay silent and pay more than they want, or they drop out.</p>
+<p><strong>How it works</strong></p>
+<ol>
+<li>Each member enters:<ul>
+<li>their maximum spend per person (for example, ₹800)</li>
+<li>their conditions, for example &quot;vegetarian food only&quot;, &quot;no alcohol&quot;, &quot;must be home by 10 pm&quot; or &quot;not more than 45 minutes from Andheri&quot;</li>
+</ul>
+</li>
+<li>The server stores these values separately. There is no API that returns another member&#39;s budget, so not even the organiser can see it.</li>
+<li>On each idea card, the website shows only one of two labels:<ul>
+<li>&quot;Within everyone&#39;s budget&quot;</li>
+<li>&quot;Above the budget of 2 members&quot; (the number of members, never their names)</li>
+</ul>
+</li>
+<li>The group&#39;s comfortable budget range is shown only when at least 3 members have entered their budget, so no individual can be identified.</li>
+</ol>
+<p><strong>Example</strong>
+Six members enter their budgets. One member enters ₹500. The &quot;Go-karting, ₹1,200 per person&quot; idea shows &quot;Above the budget of 1 member&quot;. The group sees this before voting and can choose another idea, and nobody knows who entered ₹500.</p>
+<hr>
+<h3 id="feature-4-fair-voting">Feature 4: Fair Voting</h3>
+<p><strong>What it is</strong>
+A voting system designed to give every member an equal say and to always end with one clear result.</p>
+<p><strong>The problem it solves</strong>
+In a group chat poll, members can see the results before voting, so the first few votes influence everyone (the anchoring effect described in Section 3.4). Polls have no deadline, and ties are not resolved.</p>
+<p><strong>How it works</strong></p>
+<ol>
+<li><strong>Three vote options for each idea:</strong> &quot;Love it&quot; (2 points), &quot;Okay&quot; (1 point) and &quot;No&quot; (0 points).</li>
+<li><strong>Results are hidden until the member votes.</strong> A member sees the results only after submitting their own vote.</li>
+<li><strong>One veto per member.</strong> Each member can mark one idea as &quot;I will not join if this is chosen&quot;. That idea is removed. Because each member has only one veto per plan, it is used only for serious reasons.</li>
+<li><strong>Budget fit:</strong> an idea that is above the budget of some members receives a lower score (Section 13.2 shows the formula).</li>
+<li><strong>Turn-based fairness:</strong> the website remembers previous plans of the same group. If a member&#39;s first choice lost in the last two plans, their &quot;Love it&quot; vote counts 1.5 times in the next plan. The website shows this openly, for example: &quot;Riya&#39;s first choice was not selected in the last two plans, so her vote has extra weight this time.&quot;</li>
+<li><strong>Deadline:</strong> voting closes at the set time.</li>
+<li><strong>Tie-breaking:</strong> if the top two ideas are within 5% of each other, the Groq AI selects one and gives a short reason, for example: &quot;Bowling is selected because it is within everyone&#39;s budget and is closest for 5 of the 6 members.&quot; The group can also choose a random selection instead.</li>
+</ol>
+<p><strong>Example</strong>
+Bowling receives 9 points and turf football receives 9 points. Bowling is within everyone&#39;s budget, but turf football is above the budget of one member. The tie-breaker selects bowling and shows the reason.</p>
+<hr>
+<h3 id="feature-5-availability-heatmap">Feature 5: Availability Heatmap</h3>
+<p><strong>What it is</strong>
+A weekly grid where each member marks the hours when they are free. The website shows the time slot when the most members are available.</p>
+<p><strong>The problem it solves</strong>
+Finding a common time through chat messages takes many replies, and members often miss the final decision.</p>
+<p><strong>How it works</strong></p>
+<ol>
+<li>Each member taps or drags over the hours when they are free. The grid has large cells, so it is easy to use on a phone.</li>
+<li>A cell becomes darker when more members are free at that time.</li>
+<li>The website highlights the best time slot, for example: &quot;Saturday 6 pm to 9 pm: 7 of 8 members are free.&quot;</li>
+<li>The organiser can mark some members as &quot;required&quot;, for example the person whose birthday it is. The best slot will always include the required members.</li>
+<li>Optional: members can import their busy times from Google Calendar (free API) instead of marking them manually.</li>
+</ol>
+<hr>
+<h3 id="feature-6-receipt-scanner-with-item-wise-split">Feature 6: Receipt Scanner with Item-wise Split</h3>
+<p><strong>What it is</strong>
+One member takes a photo of the restaurant bill. The website reads all items from the photo. Each member then selects the items they had on their own phone, and the website calculates each person&#39;s exact share.</p>
+<p><strong>The problem it solves</strong>
+Splitting a bill equally is unfair when members order different items. Calculating each person&#39;s share by hand, including GST and service charge, is slow and leads to mistakes.</p>
+<p><strong>How it works</strong></p>
+<ol>
+<li><strong>Scan:</strong> a member uploads a photo of the bill. The Groq vision model <code>qwen/qwen3.8-27b</code> reads each line: item name, quantity, price, GST, service charge, discount and total.</li>
+<li><strong>Check:</strong> our Go code adds the item prices and compares the result with the subtotal on the bill. If the numbers do not match, the website highlights the line so a member can correct it.</li>
+<li><strong>Select items:</strong> every member opens the bill on their own phone (through the plan link or a QR code) and selects the items they had. The selections appear on all phones immediately. If several members select the same item, its cost is divided between them.</li>
+<li><strong>Calculate:</strong><ul>
+<li>GST and service charge are divided in proportion to each member&#39;s food total.</li>
+<li>Alcoholic drinks are divided only between the members who selected them.</li>
+<li>The website also shows that, under CCPA guidelines (2022), service charge on restaurant bills in India is voluntary, so customers may ask for it to be removed.</li>
+</ul>
+</li>
+<li><strong>Settle:</strong> the website calculates the minimum number of payments needed (Section 13.5). For example, 6 members with 3 different payers can settle with 3 payments instead of 9.</li>
+<li><strong>Pay:</strong> each member sees a button such as &quot;Pay ₹347 to Aman&quot;. The button opens a UPI app (Google Pay, PhonePe, Paytm) with the amount and note already filled in. On a laptop, a QR code is shown instead.</li>
+<li><strong>Reminders:</strong> the website sends polite reminders to members who have not paid, so the person who paid does not have to ask.</li>
+</ol>
+<p><strong>Example</strong>
+A bill of ₹2,360 includes 2 pizzas, 4 drinks, GST and service charge. Aman paid the bill. Each member selects their items. The website shows: Riya owes Aman ₹412, Rohan owes Aman ₹389, and so on, each with a UPI payment button.</p>
+<p><strong>Backup</strong>
+If the AI service is not available, the bill is read with Tesseract.js, a free text-recognition library that runs in the browser.</p>
+<hr>
+<h3 id="feature-7-voice-discussion-room-with-automatic-notes">Feature 7: Voice Discussion Room with Automatic Notes</h3>
+<p><strong>What it is</strong>
+A live voice call for the group with a 5-minute timer. While members talk, the website converts their speech to text and adds the ideas, votes and time preferences to the plan automatically.</p>
+<p><strong>The problem it solves</strong>
+Some decisions are faster to discuss by voice than by typing many messages, but decisions made on a call are usually not written down, and members who were not on the call do not know what was decided.</p>
+<p><strong>How it works</strong></p>
+<ol>
+<li>A member starts the voice room. Other members join from the plan link. Recording starts only after every member agrees.</li>
+<li>Each member&#39;s browser records only that member&#39;s microphone, in 15-second parts, and only while the member is speaking. Because each recording comes from one member&#39;s phone, the website always knows who said what.</li>
+<li>The audio is sent to our Go server, which uses Groq <code>whisper-large-v3-turbo</code> to convert it to text. Whisper also understands sentences that mix Hindi and English.</li>
+<li>Every 20 seconds, the new text is sent to the Groq model <code>openai/gpt-oss-20b</code>, which returns new ideas, votes, preferred times, budget mentions and open questions.</li>
+<li>The plan page updates on every member&#39;s screen.</li>
+<li>After 5 minutes, the website shows a summary, for example: &quot;Decided: Bowling, Saturday 6 pm, about ₹600 per person. Confirm this decision?&quot; A member confirms it with one click.</li>
+<li>The audio is deleted after it is converted to text.</li>
+</ol>
+<p><strong>Example</strong>
+Rohan says, &quot;Let&#39;s do bowling at Andheri, but nothing too expensive.&quot; Riya says, &quot;Bowling is fine, but only after 6 pm.&quot; The plan shows a new idea card &quot;Bowling, Andheri&quot;, a &quot;Love it&quot; vote from Rohan, an &quot;Okay&quot; vote from Riya, and the note &quot;Riya: after 6 pm&quot;.</p>
+<p><strong>Use in person</strong>
+The same feature works when the group is sitting together. One phone is placed on the table and records the discussion.</p>
+<hr>
+<h3 id="feature-8-event-day-page-and-event-summary-video">Feature 8: Event Day Page and Event Summary Video</h3>
+<p><strong>Event Day Page</strong></p>
+<ul>
+<li><strong>Schedule:</strong> the day&#39;s plan in time order, for example &quot;6:00 pm meet at Andheri station, 6:30 pm bowling, 8:30 pm dinner at Lokhandwala&quot;.</li>
+<li><strong>Who is on the way:</strong> a member can share their location for one hour. Other members see the estimated arrival time, for example &quot;Aman: 12 minutes away&quot;. A member can also click &quot;I will be late&quot; and the schedule updates for everyone.</li>
+<li><strong>Shared photos:</strong> all members add photos and short videos (up to 10 seconds) to one shared page.</li>
+<li><strong>Live video for members who could not attend:</strong> one member can start a live video so that members who could not attend can watch an important moment, for example a cake cutting. Only members of the plan can watch.</li>
+</ul>
+<p><strong>Event Summary Video</strong></p>
+<ul>
+<li>After the event, the website creates a 30-second vertical video in the browser.</li>
+<li>The video shows the main steps of the plan: the number of ideas, the winning idea and its votes, the confirmation, photos from the event and the final cost split.</li>
+<li>Members can download it and share it on Instagram or WhatsApp. This also helps more people learn about the website.</li>
+</ul>
+<hr>
+<h3 id="feature-9-fair-meeting-location">Feature 9: Fair Meeting Location</h3>
+<p><strong>What it is</strong>
+The website suggests a meeting place where the longest travel time for any member is as short as possible.</p>
+<p><strong>The problem it solves</strong>
+When a group chooses a central place by guessing, one member may travel 90 minutes while others travel 10 minutes.</p>
+<p><strong>How it works</strong></p>
+<ol>
+<li>Each member enters their starting point or selects their nearest railway station.</li>
+<li>The website finds suitable places (for example, bowling alleys or cafes) around the middle of all starting points, using OpenStreetMap data.</li>
+<li>It calculates the travel time from each member to each place.</li>
+<li>It selects the place where the longest travel time is the shortest, and shows each member&#39;s travel time.</li>
+<li><strong>Mumbai local train support:</strong> for Mumbai, the website uses a simple table of travel times between stations on the Western, Central and Harbour lines, because train travel times are very different from road distances.</li>
+</ol>
+<p><strong>Example</strong>
+Members start from Borivali, Andheri, Dadar and Bandra. The website suggests a place near Andheri, where every member reaches within 35 minutes.</p>
+<hr>
+<h2 id="10-review-of-the-teams-suggested-features"><span class="sec">10</span><span>Review of the team&#39;s suggested features</span></h2>
+<p>We reviewed every feature suggested by the team. We kept a feature if it addresses one of the three reasons in Section 4 and can be built within 24 hours.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Suggested feature</th>
+<th>Decision</th>
+<th>Final form</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>User DNA based on interests</td>
+<td><strong>Merged</strong></td>
+<td>Members answer 5 short questions about their interests when they join. This data is used for Suggested Ideas</td>
+<td>Useful when the group has no ideas, but common in other apps, so it supports other features instead of being a main feature</td>
+</tr>
+<tr>
+<td>Strangers party</td>
+<td><strong>Changed</strong></td>
+<td>Open Seats: friends of current members can request empty seats, and the organiser approves them</td>
+<td>Meeting strangers is a different product and creates safety risks. However, empty seats are a real cost problem, because fewer members means a higher cost per person, so we kept that part</td>
+</tr>
+<tr>
+<td>Availability Heatmap</td>
+<td><strong>Kept (Feature 5)</strong></td>
+<td>Added required members and Google Calendar import</td>
+<td>Needed for the &quot;finalize plans&quot; requirement</td>
+</tr>
+<tr>
+<td>AI Tiebreaker</td>
+<td><strong>Merged into Feature 4</strong></td>
+<td>Part of Fair Voting, with a written reason and a random selection option</td>
+<td>Works best as one step of the voting process</td>
+</tr>
+<tr>
+<td>Receipt Scanner</td>
+<td><strong>Kept (Feature 6)</strong></td>
+<td>Each member selects their items on their own phone, with GST calculation, minimum payments and UPI links</td>
+<td>Splitwise offers scanning only in its paid plan. Item selection by each member and UPI payment make our version more useful</td>
+</tr>
+<tr>
+<td>Chatroom to join a group that is not full</td>
+<td><strong>Merged</strong></td>
+<td>Part of Open Seats: a request, the organiser&#39;s approval, and payment of the share to confirm the seat</td>
+<td>A separate chatroom would add more messages, which is the opposite of what the problem statement asks for</td>
+</tr>
+<tr>
+<td>Support through a chatbot</td>
+<td><strong>Changed</strong></td>
+<td>A question box that answers questions about the plan, for example &quot;What is the plan?&quot;, &quot;How much do I owe?&quot; or &quot;Where do we meet?&quot;, using our database</td>
+<td>A general chatbot is common. A chatbot that answers from the group&#39;s own plan and payment data is more useful</td>
+</tr>
+<tr>
+<td>Sponsorship connection through the website</td>
+<td><strong>Changed</strong></td>
+<td>Venue Offers: venues see anonymous group requests, for example &quot;12 people, Saturday, Andheri, ₹500 per person&quot;, and send group offers. For college clubs, sponsors can send offers for club events</td>
+<td>This also forms our business model (Section 26)</td>
+</tr>
+<tr>
+<td>Tripzyy connection</td>
+<td><strong>Kept (small)</strong></td>
+<td>A button that sends a confirmed plan (members, dates, budget) to Tripzyy to create a trip itinerary</td>
+<td>Connects our two projects and is also useful for the Convergence Round</td>
+</tr>
+<tr>
+<td>Timeline of the event</td>
+<td><strong>Merged into Feature 8</strong></td>
+<td>The Event Day Page schedule, with &quot;on the way&quot; and &quot;I will be late&quot; updates</td>
+<td>Most useful on the day of the event</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="11-additional-features-if-time-allows"><span class="sec">11</span><span>Additional features (if time allows)</span></h2>
+<ul>
+<li><strong>Suggested Ideas:</strong> the website suggests 4 ideas using the members&#39; interests, the group budget, the area and the weather forecast (Open-Meteo). Places come from OpenStreetMap.</li>
+<li><strong>Open Seats:</strong> empty seats can be offered to friends of current members. The requester sees the name of a mutual friend in the group. The organiser approves the request, and the new member pays their share to confirm the seat.</li>
+<li><strong>Venue Offers:</strong> a simple dashboard for venues. Venue offers appear in the plan as new idea cards marked &quot;Offer&quot;.</li>
+<li><strong>Plan question box:</strong> answers questions such as &quot;How much do I owe?&quot; from our database. The Groq model writes the answer in simple sentences.</li>
+<li><strong>Live WhatsApp link preview:</strong> when the plan link is shared in WhatsApp, the preview image shows the current vote results, for example &quot;Bowling 5 votes, Turf 2 votes. Voting closes at 9 pm&quot;.</li>
+<li><strong>Voice note input:</strong> a member records a voice note such as &quot;I am fine with anything under ₹700, but not on Sunday&quot;. The website converts it into votes, a private budget and availability.</li>
+<li><strong>Repeating plans:</strong> for example, &quot;Turf football every second Saturday&quot;, with the same members and automatic cost splitting.</li>
+<li><strong>Tripzyy connection:</strong> for overnight trips, send the confirmed plan to Tripzyy.</li>
+<li><strong>Attendance record:</strong> a small badge for members who attend regularly. It only shows positive records and never shows missed events.</li>
+</ul>
+<hr>
+<h2 id="12-audio-and-video-features-summary"><span class="sec">12</span><span>Audio and video features (summary)</span></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Type</th>
+<th>What it does</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Voice Discussion Room with Automatic Notes</td>
+<td>Live audio</td>
+<td>Converts a 5-minute group voice discussion into ideas, votes and decisions on the plan</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>Voice note input</td>
+<td>Audio</td>
+<td>Converts one voice note into votes, budget and availability</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>Live video for members who could not attend</td>
+<td>Live video</td>
+<td>Members who could not attend can watch important moments live</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>Shared photos</td>
+<td>Photos and short videos</td>
+<td>One shared page for all photos from the event</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>Event Summary Video</td>
+<td>Video</td>
+<td>A 30-second video summary of the plan and the event, created in the browser</td>
+<td>P1</td>
+</tr>
+</tbody></table></div>
+<p>All of these are free to run:</p>
+<ul>
+<li><strong>LiveKit Cloud&#39;s free plan:</strong> 5,000 call minutes per month. (<a href="https://agentdeals.dev/vendor/livekit" target="_blank" rel="noopener noreferrer">LiveKit pricing</a>)</li>
+<li><strong>Groq Whisper:</strong> free for up to 2,000 requests and 8 hours of audio per day.</li>
+<li><strong>Event Summary Video:</strong> created entirely in the browser, so it does not need a server.</li>
+</ul>
+<hr>
+<h2 id="13-how-the-technical-parts-work"><span class="sec">13</span><span>How the technical parts work</span></h2>
+<h3 id="131-whatsapp-chat-import-process">13.1 WhatsApp Chat Import process</h3>
+<ol>
+<li><strong>Read the file (Go code, no AI).</strong> Each line such as <code>12/10/26, 9:41 pm - Rohan: bowling chalein?</code> is split into date, time, sender and text. Both Android and iPhone formats are supported. A line without a date is added to the previous message, because it is part of a multi-line message.</li>
+<li><strong>Remove unnecessary messages (Go code, no AI).</strong> System messages (&quot;joined&quot;, &quot;left&quot;), <code>&lt;Media omitted&gt;</code>, &quot;This message was deleted&quot;, and very short messages such as &quot;ok&quot;, &quot;haha&quot; or &quot;?&quot; are removed.</li>
+<li><strong>Select relevant messages.</strong> Only the last 7 days, or the last 400 messages after cleaning, are kept. Messages with planning words are given priority (place names, numbers, days of the week, and words such as &quot;plan&quot;, &quot;book&quot;, &quot;let&#39;s&quot;, &quot;chalo&quot;, &quot;kab&quot;, &quot;kahan&quot;, &quot;kitna&quot;).</li>
+<li><strong>Send to Groq (AI).</strong> The messages are sent in batches to <code>openai/gpt-oss-20b</code> with strict JSON mode, so the answer always has this exact format:</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;ideas&quot;: [{&quot;title&quot;: &quot;Bowling&quot;, &quot;place&quot;: &quot;Andheri&quot;, &quot;cost_per_person&quot;: 600,
+             &quot;proposed_by&quot;: &quot;Rohan&quot;, &quot;liked_by&quot;: [&quot;Aman&quot;, &quot;Riya&quot;], &quot;disliked_by&quot;: []}],
+  &quot;times_mentioned&quot;: [{&quot;by&quot;: &quot;Riya&quot;, &quot;text&quot;: &quot;Saturday after 6&quot;}],
+  &quot;already_joining&quot;: [&quot;Rohan&quot;, &quot;Aman&quot;],
+  &quot;budget_hints&quot;: [{&quot;by&quot;: &quot;Kunal&quot;, &quot;max&quot;: 500}],
+  &quot;undecided&quot;: &quot;Saturday or Sunday&quot;
+}
+</code></pre>
+<ol start="5">
+<li><strong>Combine results (Go code).</strong> Ideas with the same name from different batches are combined, and their supporters are counted.</li>
+<li><strong>Create the plan.</strong> Ideas become idea cards. Budget hints are shown only to the member who mentioned them, on their private budget screen.</li>
+</ol>
+<p><strong>Free usage limit:</strong> each gpt-oss model allows 8,000 tokens per minute on the free plan. 400 short messages are about 6,000 tokens. For larger chats, the work is divided between <code>gpt-oss-20b</code>, <code>gpt-oss-120b</code> and <code>qwen3.8-27b</code>, because each model has a separate limit.</p>
+<h3 id="132-voting-score-formula">13.2 Voting score formula</h3>
+<p>For each idea:</p>
+<pre><code>points        = (Love it x 2) + (Okay x 1)
+                (a &quot;Love it&quot; vote from a member with turn-based priority counts x 1.5)
+budget_fit    = members whose budget fits / members who entered a budget
+final_score   = points x (0.5 + 0.5 x budget_fit)
+vetoed idea   = removed from the vote
+tie           = top two scores within 5% → AI tie-breaker or random selection
+</code></pre>
+<p>The website shows this calculation to any member who clicks &quot;Why did this idea win?&quot;.</p>
+<h3 id="133-how-private-budgets-stay-private">13.3 How private budgets stay private</h3>
+<ul>
+<li>Budgets are stored in a separate database table.</li>
+<li>No API returns another member&#39;s budget value.</li>
+<li>The server answers only two questions:<ul>
+<li>&quot;Is this idea within everyone&#39;s budget?&quot; The answer is &quot;Yes&quot; or &quot;Above the budget of N members&quot;.</li>
+<li>&quot;What is the group&#39;s comfortable budget range?&quot; This is answered only if 3 or more members have entered a budget.</li>
+</ul>
+</li>
+<li>The organiser and the admin screens also see only these answers.</li>
+</ul>
+<h3 id="134-plan-statuses-for-feature-1">13.4 Plan statuses (for Feature 1)</h3>
+<pre><code>DRAFT → VOTING → COLLECTING PAYMENTS → CONFIRMED → EVENT DAY → SETTLING → COMPLETED
+                         │
+                         └──→ NOT CONFIRMED (deadline passed) → all held payments released
+</code></pre>
+<ul>
+<li><strong>Collecting payments:</strong> each &quot;Join and pay&quot; creates a Razorpay test-mode payment with manual capture. Its status is &quot;authorised&quot; (held).</li>
+<li><strong>When the number of paid members reaches the minimum:</strong> a Go background job captures all held payments, the plan status changes to &quot;Confirmed&quot;, and a live update is sent to all members.</li>
+<li><strong>If the deadline passes first:</strong> a background job (River) changes the status to &quot;Not confirmed&quot;. The payments are not captured, so Razorpay refunds them automatically.</li>
+<li><strong>If more members join after confirmation:</strong> the difference is refunded to all members through the Razorpay refund API.</li>
+<li><strong>Reliability:</strong> every step is saved in a log table. If the server restarts, the River jobs continue from where they stopped.</li>
+</ul>
+<h3 id="135-settlement-in-the-minimum-number-of-payments">13.5 Settlement in the minimum number of payments</h3>
+<ol>
+<li>For each member, calculate: balance = amount paid − amount owed.</li>
+<li>Make two lists: members who should receive money and members who should pay.</li>
+<li>Match the member who owes the most with the member who should receive the most. The payment is the smaller of the two amounts. Remove any member whose balance becomes zero. Repeat.</li>
+<li>This needs at most (number of members − 1) payments. For 6 members, that is at most 5 payments, instead of up to 15 if every member paid every other member.</li>
+</ol>
+<h3 id="136-bill-split-calculation">13.6 Bill split calculation</h3>
+<pre><code>member_food   = sum of (item price ÷ number of members who selected the item)
+member_tax    = (member_food ÷ total food) x (GST + service charge − discount)
+member_drinks = alcoholic items, divided only between members who selected them
+member_total  = member_food + member_drinks + member_tax
+                (rounded to whole rupees; any rounding difference is assigned to the payer)
+</code></pre>
+<h3 id="137-voice-discussion-room-process">13.7 Voice Discussion Room process</h3>
+<ol>
+<li><strong>Call:</strong> LiveKit (free plan) connects all members&#39; audio.</li>
+<li><strong>Recording:</strong> each browser records only its own member&#39;s microphone, in 15-second parts, and only when the member is speaking (checked by sound level).</li>
+<li><strong>Speech to text:</strong> each part goes to our Go server and then to Groq <code>whisper-large-v3-turbo</code>. The speaker is known because the audio came from their phone.</li>
+<li><strong>Text to plan data:</strong> every 20 seconds, Go sends the new text to <code>gpt-oss-20b</code> (strict JSON) and asks for new ideas, votes, times, budget mentions and open questions.</li>
+<li><strong>Live update:</strong> the result is sent to all members through WebSocket, and the plan page updates.</li>
+<li><strong>Summary:</strong> after 5 minutes, the website shows the decisions and asks for confirmation.</li>
+</ol>
+<p><strong>Free usage limit:</strong> Whisper allows 20 requests per minute. Four members sending one part every 15 seconds make 16 requests per minute, which is within the limit.</p>
+<h3 id="138-fair-meeting-location-calculation">13.8 Fair Meeting Location calculation</h3>
+<ol>
+<li>Find the centre point of all members&#39; starting locations.</li>
+<li>Find suitable places near the centre using the OpenStreetMap Overpass API (free), filtered by the type of idea (bowling, cafe, turf).</li>
+<li>Calculate the travel time from each member to each place using OSRM (free) or the Mumbai local train table.</li>
+<li>Select the place where the longest travel time is the smallest.</li>
+</ol>
+<h3 id="139-event-summary-video">13.9 Event Summary Video</h3>
+<ul>
+<li>Created in the browser using an HTML canvas and the browser&#39;s built-in video recorder (MediaRecorder).</li>
+<li>Each scene is a simple animated card: the number of ideas, the winning vote, the confirmation, five photos and the cost summary.</li>
+<li>No server is needed, and the video is ready in about 10 seconds.</li>
+</ul>
+<hr>
+<h2 id="14-ai-plan-groq-free-tier"><span class="sec">14</span><span>AI plan (Groq, free tier)</span></h2>
+<h3 id="141-our-rule-for-using-ai">14.1 Our rule for using AI</h3>
+<blockquote>
+<p><strong>Our code makes the decisions. AI reads and writes text. Members approve important actions.</strong></p>
+</blockquote>
+<ul>
+<li>Money calculations, deadlines and plan confirmation are always done by our Go code, so the results are exact.</li>
+<li>AI is used only to read unstructured input (chats, bill photos, speech) and to write short explanations.</li>
+<li>Important actions (confirming a plan, paying, removing an idea) always need a member&#39;s click.</li>
+</ul>
+<h3 id="142-groq-models-we-use">14.2 Groq models we use</h3>
+<p>Groq free tier, checked on 9 October 2026 (<a href="https://console.groq.com/docs/rate-limits" target="_blank" rel="noopener noreferrer">Groq rate limits</a>). A credit card is not needed.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Free limit</th>
+<th>Use in our project</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>openai/gpt-oss-20b</code></td>
+<td>30 requests per minute, 1,000 per day, 8,000 tokens per minute, 200,000 tokens per day</td>
+<td>Tasks that need an exact data format: chat import, voice discussion updates, voice note input</td>
+</tr>
+<tr>
+<td><code>openai/gpt-oss-120b</code></td>
+<td>Same as above</td>
+<td>Written explanations: tie-breaker reason, suggested ideas, answers in the plan question box, summary of the chat</td>
+</tr>
+<tr>
+<td><code>qwen/qwen3.8-27b</code></td>
+<td>Same as above</td>
+<td>Reading bill photos (it is the only Groq model that accepts images, and it supports JSON mode). Also a backup for the two models above</td>
+</tr>
+<tr>
+<td><code>whisper-large-v3-turbo</code></td>
+<td>20 requests per minute, 2,000 per day, 8 hours of audio per day</td>
+<td>Voice discussion room and voice notes</td>
+</tr>
+<tr>
+<td><code>meta-llama/llama-prompt-guard-2-86m</code></td>
+<td>30 requests per minute, 14,400 per day</td>
+<td>Checks uploaded chats and questions for text that tries to change the AI&#39;s instructions</td>
+</tr>
+</tbody></table></div>
+<p>Image details: each image counts as about 2,048 tokens, and up to 3 images can be sent in one request. (<a href="https://console.groq.com/docs/vision" target="_blank" rel="noopener noreferrer">Groq vision documentation</a>)</p>
+<h3 id="143-how-we-stay-within-the-free-limits">14.3 How we stay within the free limits</h3>
+<ul>
+<li>Tasks that do not need AI are done in code: cleaning chats, calculations, deadlines and scores.</li>
+<li>Every AI answer is saved, so the same chat or bill is never sent twice.</li>
+<li>Large tasks are divided between three models, because each model has its own limit.</li>
+<li>Demo data is prepared once and saved before the hackathon.</li>
+<li>If the AI service is not available, each feature has a backup:<ul>
+<li>Chat import uses keyword matching.</li>
+<li>The receipt scanner uses Tesseract.js.</li>
+<li>The voice room lets members type notes instead.</li>
+</ul>
+</li>
+</ul>
+<h3 id="144-jev-optional">14.4 Jev (optional)</h3>
+<p>Our senior suggested using Jev. Jev is a model from TypeSafe AI that returns structured decisions (yes/no, a choice from a list, or a score) with a confidence value, in 70 to 500 milliseconds. (<a href="https://nexos.ai/blog/what-is-jev/" target="_blank" rel="noopener noreferrer">nexos.ai guide</a>)</p>
+<ul>
+<li>Jev is not free. It costs about $0.058 per million input tokens through AI/ML API (<a href="https://aimlapi.com/models/typesafe-jev-latest" target="_blank" rel="noopener noreferrer">AI/ML API</a>). This is very low, but it is not zero.</li>
+<li>Our Go code has one function for structured decisions. By default it uses Groq <code>gpt-oss-20b</code> with strict JSON, which is free. If we receive free Jev credits, we can switch this function to Jev by changing one setting.</li>
+<li>Suitable tasks for Jev are classifying each chat message (idea, vote, time or not relevant) and classifying each bill line (food, drink, alcohol, tax or discount).</li>
+</ul>
+<hr>
+<h2 id="15-payment-plan-free-for-the-hackathon"><span class="sec">15</span><span>Payment plan (free for the hackathon)</span></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>What we use</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hold payments before confirmation (demo)</td>
+<td>Razorpay test mode with manual capture (held for up to 5 days, refunded automatically if not captured)</td>
+<td>Free (test mode uses no real money)</td>
+</tr>
+<tr>
+<td>Hold payments (real product)</td>
+<td>UPI Reserve Pay through a payment gateway (block of up to ₹10,000 for up to 90 days)</td>
+<td>Standard gateway fee, later</td>
+</tr>
+<tr>
+<td>Members paying each other after the event</td>
+<td>UPI payment link: <code>upi://pay?pa=aman@okaxis&amp;pn=Aman&amp;am=347&amp;cu=INR&amp;tn=Bowling</code></td>
+<td>Free, no payment gateway needed</td>
+</tr>
+<tr>
+<td>Payment on a laptop</td>
+<td>The same UPI link shown as a QR code</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Payment reminders</td>
+<td>Browser notifications (Web Push) from our server</td>
+<td>Free</td>
+</tr>
+</tbody></table></div>
+<p><strong>Why we do not use UPI money requests:</strong> since 1 October 2025, NPCI does not allow person-to-person collect requests (<a href="https://www.outlookbusiness.com/news/npci-to-stop-upi-p2p-collect-requests-from-oct-1-to-combat-fraud" target="_blank" rel="noopener noreferrer">Outlook Business</a>). The member who owes money must start the payment. Our payment link opens the UPI app with the details already filled in, so this takes only a few seconds.</p>
+<hr>
+<h2 id="16-final-tech-stack-all-free"><span class="sec">16</span><span>Final tech stack (all free)</span></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Tool</th>
+<th>Reason</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Frontend</td>
+<td><strong>Next.js</strong> (App Router) with TypeScript</td>
+<td>Fast pages, simple routing and free hosting on Vercel</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Styling</td>
+<td><strong>Tailwind CSS</strong> with shadcn/ui components</td>
+<td>Fast to build and easy to keep consistent</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Animation</td>
+<td>Motion (Framer Motion)</td>
+<td>Smooth transitions for idea cards, the progress bar and confirmation</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Backend</td>
+<td><strong>Go</strong> with the chi router</td>
+<td>Fast, simple, and handles many live connections and timers with little memory</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Live updates</td>
+<td>WebSocket in Go (<code>coder/websocket</code>)</td>
+<td>Votes, bill selections and plan confirmation appear on all screens immediately</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Background jobs</td>
+<td>River (Go library that uses PostgreSQL)</td>
+<td>Deadlines, automatic refunds and reminders. Jobs continue after a server restart</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>PostgreSQL on <strong>Neon</strong> free plan</td>
+<td>Standard SQL database, 0.5 GB free storage</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Database access</td>
+<td>pgx and sqlc</td>
+<td>Type-checked SQL queries in Go</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>AI</td>
+<td><strong>Groq</strong> free tier (gpt-oss-20b, gpt-oss-120b, qwen3.8-27b, Whisper)</td>
+<td>Fast AI models with no credit card required</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Backup text recognition</td>
+<td>Tesseract.js (runs in the browser)</td>
+<td>Reads bills if the AI service is not available</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Voice and video calls</td>
+<td><strong>LiveKit Cloud</strong> free plan (5,000 minutes per month). LiveKit&#39;s server is open source and written in Go</td>
+<td>Voice discussion room and live video</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Payments</td>
+<td>Razorpay test mode and UPI payment links</td>
+<td>Complete payment flow without real money</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Maps</td>
+<td>MapLibre with OpenFreeMap map tiles</td>
+<td>Free maps without an API key</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Places and travel times</td>
+<td>OpenStreetMap Overpass, OSRM and Nominatim</td>
+<td>Free, open map data</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Weather</td>
+<td>Open-Meteo</td>
+<td>Free weather forecasts without an API key</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Photo and bill storage</td>
+<td>Cloudinary free plan</td>
+<td>Free image storage and resizing, no credit card needed</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Notifications</td>
+<td>Web Push (<code>webpush-go</code>)</td>
+<td>Free notifications to phones and laptops through the browser</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Link preview images</td>
+<td>Next.js <code>ImageResponse</code></td>
+<td>Shows the current vote results in the WhatsApp link preview</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Calendar invites</td>
+<td><code>.ics</code> file created in Go and a Google Calendar link</td>
+<td>Works with all calendar apps</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Frontend hosting</td>
+<td><strong>Vercel</strong> Hobby plan</td>
+<td>Free hosting for Next.js</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Backend hosting</td>
+<td><strong>Render</strong> free web service (Koyeb free plan as an alternative)</td>
+<td>Free hosting for Go. The server sleeps after 15 minutes without use, so we start it before the demo</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Local webhook testing</td>
+<td>Cloudflare Tunnel</td>
+<td>A free public link to a laptop, so Razorpay can reach our local server</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Code hosting</td>
+<td>GitHub</td>
+<td>Free</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Total cost</strong></td>
+<td></td>
+<td></td>
+<td><strong>₹0</strong></td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="17-system-architecture"><span class="sec">17</span><span>System architecture</span></h2>
+<h3 id="171-overview">17.1 Overview</h3>
+<pre><code>                  ┌──────────────────────────────────────────────┐
+  Phones and      │  Next.js + Tailwind website (Vercel)          │
+  laptops  ─────▶ │  plan page · voting · availability · payment  │
+  (no app)        │  bill split · voice room · event day · video  │
+                  └───────────────┬──────────────────┬───────────┘
+                         REST API │                  │ WebSocket (live updates)
+                                  ▼                  ▼
+                  ┌──────────────────────────────────────────────┐
+                  │            Go backend (Render)                │
+                  │  plans · ideas · votes · budgets · availability│
+                  │  payments · bills · settlement · voice · alerts│
+                  │  River background jobs (deadlines, refunds)    │
+                  └──┬──────────┬──────────┬──────────┬──────────┘
+                     │          │          │          │
+                     ▼          ▼          ▼          ▼
+               PostgreSQL     Groq      Razorpay   LiveKit Cloud
+                 (Neon)       (AI)    (test mode)  (voice/video)
+
+  Other free services: Cloudinary (photos) · OpenStreetMap and OSRM (places, travel time)
+                       Open-Meteo (weather) · Web Push (notifications) · UPI links
+</code></pre>
+<h3 id="172-go-backend-modules">17.2 Go backend modules</h3>
+<p>The backend is one Go service, divided into modules. Each module handles one part of the product.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>plans</code></td>
+<td>Create and join plans, plan statuses, deadlines, final plan page</td>
+</tr>
+<tr>
+<td><code>ideas</code></td>
+<td>Idea cards and suggested ideas</td>
+</tr>
+<tr>
+<td><code>chatimport</code></td>
+<td>WhatsApp chat file parser, message cleaning, AI extraction, combining results</td>
+</tr>
+<tr>
+<td><code>votes</code></td>
+<td>Votes, vetoes, hidden results, score calculation, turn-based fairness, tie-breaking</td>
+</tr>
+<tr>
+<td><code>budget</code></td>
+<td>Private budget storage and the two allowed budget questions</td>
+</tr>
+<tr>
+<td><code>availability</code></td>
+<td>Free hours, best time slot, required members</td>
+</tr>
+<tr>
+<td><code>payments</code></td>
+<td>Advance payments: Razorpay hold, capture and refund, plan confirmation</td>
+</tr>
+<tr>
+<td><code>bills</code></td>
+<td>Bill reading with Groq vision, total check, item selection, bill split</td>
+</tr>
+<tr>
+<td><code>settle</code></td>
+<td>Balances, minimum payments, UPI links, reminders</td>
+</tr>
+<tr>
+<td><code>voice</code></td>
+<td>LiveKit room access, audio to text, plan updates from the discussion</td>
+</tr>
+<tr>
+<td><code>eventday</code></td>
+<td>Schedule, arrival times, shared photos, live video</td>
+</tr>
+<tr>
+<td><code>realtime</code></td>
+<td>WebSocket connections, with one group of connections per plan</td>
+</tr>
+<tr>
+<td><code>ai</code></td>
+<td>All Groq requests in one place: strict JSON, saved answers, backups, structured decisions</td>
+</tr>
+<tr>
+<td><code>jobs</code></td>
+<td>River background jobs: closing deadlines, confirming plans, refunds, reminders</td>
+</tr>
+<tr>
+<td><code>public</code></td>
+<td>Public API, webhooks and widget support for other teams (Convergence Round)</td>
+</tr>
+</tbody></table></div>
+<h3 id="173-example-flow-a-plan-is-confirmed">17.3 Example flow: a plan is confirmed</h3>
+<ol>
+<li>Neha clicks &quot;Join and pay&quot;. The Go server creates a Razorpay order with manual capture, and the Razorpay payment window opens.</li>
+<li>Neha pays in test mode. Razorpay sends a &quot;payment.authorized&quot; webhook to our server, and the payment is saved with the status &quot;held&quot;.</li>
+<li>The server counts the held payments. The minimum of 6 is now reached.</li>
+<li>The server captures all 6 payments and changes the plan status to &quot;Confirmed&quot;.</li>
+<li>The server sends a &quot;plan.confirmed&quot; event through WebSocket. Every open screen updates, and members who are not on the website receive a browser notification.</li>
+<li>The final plan page and the calendar invite are available.</li>
+</ol>
+<h3 id="174-example-flow-the-deadline-passes">17.4 Example flow: the deadline passes</h3>
+<ol>
+<li>A River job runs at the deadline (Friday 8 pm). Only 4 of the required 6 members have paid.</li>
+<li>The plan status changes to &quot;Not confirmed&quot;. The held payments are not captured, so Razorpay refunds them automatically.</li>
+<li>Each member receives a message: &quot;This plan was not confirmed because fewer than 6 members paid. Your ₹2,000 has been released.&quot; The website also offers to start a new vote with the second-highest idea.</li>
+</ol>
+<h3 id="175-live-update-events-sent-through-websocket">17.5 Live update events (sent through WebSocket)</h3>
+<p><code>member.joined</code>, <code>idea.added</code>, <code>vote.updated</code>, <code>results.visible</code>, <code>availability.updated</code>, <code>payment.updated</code>, <code>share.reduced</code>, <code>plan.confirmed</code>, <code>plan.not_confirmed</code>, <code>bill.scanned</code>, <code>bill.selection.updated</code>, <code>settlement.updated</code>, <code>voice.text</code>, <code>voice.plan_update</code>, <code>member.arrival_time</code>, <code>photo.added</code>, <code>live_video.started</code></p>
+<hr>
+<h2 id="18-folder-structure"><span class="sec">18</span><span>Folder structure</span></h2>
+<pre><code>project/
+├── web/                         # Next.js + Tailwind
+│   ├── app/
+│   │   ├── page.tsx             # home page: &quot;Create a plan&quot;
+│   │   ├── p/[planId]/          # the plan link that members open
+│   │   │   ├── page.tsx         # plan page (all steps)
+│   │   │   ├── vote/            # Fair Voting
+│   │   │   ├── when/            # Availability Heatmap
+│   │   │   ├── pay/             # Plan Confirmation by Advance Payment
+│   │   │   ├── voice/           # Voice Discussion Room
+│   │   │   ├── event/           # Event Day Page
+│   │   │   ├── bill/[billId]/   # Receipt Scanner with Item-wise Split
+│   │   │   ├── settle/          # who pays whom
+│   │   │   └── summary/         # Event Summary Video
+│   │   ├── import/              # WhatsApp Chat Import
+│   │   └── og/[planId]/         # link preview image with live vote results
+│   ├── components/              # idea cards, heatmap grid, progress bar
+│   └── lib/                     # API client, WebSocket hook, UPI link builder
+├── server/                      # Go
+│   ├── cmd/api/main.go
+│   ├── internal/
+│   │   ├── plans/  ideas/  chatimport/  votes/  budget/  availability/
+│   │   ├── payments/  bills/  settle/  voice/  eventday/  realtime/
+│   │   ├── ai/  jobs/  public/
+│   ├── db/
+│   │   ├── migrations/
+│   │   └── queries/             # SQL files for sqlc
+│   └── sqlc.yaml
+├── packages/
+│   ├── fairsplit/               # npm + Go: bill split, minimum payments, UPI links
+│   ├── chat2plan/               # Go module + npm command-line tool: WhatsApp chat parser
+│   ├── group-poll-widget/       # &lt;group-poll&gt; web component for other websites
+│   └── mcp-server/              # Go MCP server: AI assistants can create plans
+├── demo/                        # demo chat file, demo bill photos, sample data
+└── docker-compose.yml           # local PostgreSQL
+</code></pre>
+<hr>
+<h2 id="19-database-design"><span class="sec">19</span><span>Database design</span></h2>
+<pre><code class="language-sql">users        (id, name, phone_optional, upi_id_optional, interests_json, created_at)
+plans        (id, title, organiser_id, status, min_members, max_seats, total_cost,
+              share_per_member, idea_deadline, vote_deadline, payment_deadline,
+              final_idea_id, final_start, final_place, created_at)
+members      (plan_id, user_id, member_status  -- interested | joining | paid
+              , is_required, joined_at)
+ideas        (id, plan_id, title, place, lat, lng, cost_per_person, time_note,
+              link, photo_url, source  -- manual | chat | voice | ai | offer
+              , proposed_by, removed_by_veto)
+votes        (plan_id, idea_id, user_id, value  -- 0 no | 1 okay | 2 love it
+              , is_veto, created_at)
+budgets      (plan_id, user_id, max_per_person, conditions_json)   -- never returned directly
+availability (plan_id, user_id, slot_start, slot_end)
+vote_history (group_key, user_id, consecutive_losses)
+payments     (id, plan_id, user_id, amount, razorpay_order_id, razorpay_payment_id,
+              status  -- created | held | captured | refunded | failed
+              , refund_amount)
+bills        (id, plan_id, photo_url, paid_by, subtotal, gst, service_charge,
+              discount, total, totals_match)
+bill_items   (id, bill_id, name, quantity, price, category  -- food | drink | alcohol
+              )
+item_choices (bill_item_id, user_id, share_units)
+expenses     (id, plan_id, paid_by, amount, note, split_type)
+settlements  (id, plan_id, from_user, to_user, amount, status, paid_at)
+voice_rooms  (id, plan_id, livekit_room, started_at, ended_at, summary_json)
+voice_lines  (voice_room_id, user_id, text, spoken_at)
+photos       (id, plan_id, user_id, media_url, media_type, created_at)
+offers       (id, plan_id, venue_name, offer_text, price_per_person, status)
+event_log    (id, plan_id, type, payload_json, created_at)   -- every step, used for history and the summary video
+push_subscriptions (user_id, endpoint, keys_json)
+</code></pre>
+<hr>
+<h2 id="20-api-design"><span class="sec">20</span><span>API design</span></h2>
+<p>All endpoints start with <code>/api/v1</code>. Requests and responses use JSON. Live updates are sent through <code>/ws/plans/{id}</code>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>POST</td>
+<td><code>/plans</code></td>
+<td>Create a plan</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/plans/{id}/join</code></td>
+<td>Join a plan with a name</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/plans/{id}</code></td>
+<td>Get the plan page data (without private budgets)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/plans/{id}/import-chat</code></td>
+<td>Upload a WhatsApp chat file and create idea cards</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/plans/{id}/ideas</code></td>
+<td>Add an idea</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/plans/{id}/suggest</code></td>
+<td>Get suggested ideas</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/plans/{id}/votes</code></td>
+<td>Save the member&#39;s votes and veto</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/plans/{id}/results</code></td>
+<td>Get results (only after the member has voted)</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/plans/{id}/budget</code></td>
+<td>Save the member&#39;s private budget</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/plans/{id}/budget-fit</code></td>
+<td>Get the budget label for each idea</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/plans/{id}/availability</code></td>
+<td>Save the member&#39;s free hours</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/plans/{id}/best-slot</code></td>
+<td>Get the best time slot</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/plans/{id}/payment</code></td>
+<td>Start an advance payment (creates a Razorpay order)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/webhooks/razorpay</code></td>
+<td>Receive payment held, captured and refunded events</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/plans/{id}/bills</code></td>
+<td>Upload a bill photo and read its items</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/bills/{id}/choices</code></td>
+<td>Save the items the member had</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/plans/{id}/settle</code></td>
+<td>Get the minimum payments and UPI links</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/plans/{id}/voice</code></td>
+<td>Start a voice room and get a LiveKit access token</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/voice/{id}/audio</code></td>
+<td>Send a 15-second audio part</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/plans/{id}/arrival</code></td>
+<td>Share location for the arrival time</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/plans/{id}/photos</code></td>
+<td>Add a photo or short video</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/plans/{id}/calendar.ics</code></td>
+<td>Download the calendar invite</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/plans/{id}/ask</code></td>
+<td>Ask a question about the plan</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="21-preparation-for-the-convergence-round"><span class="sec">21</span><span>Preparation for the Convergence Round</span></h2>
+<p>In Round 2, the Convergence Round pairs our team with a team from another domain. Each team must add a working part of the other team&#39;s solution to its own project. The prize is ₹12,000 (₹6,000 for each team in the winning pair).</p>
+<p>To make this easy, we will build our main parts so that another team can use them quickly:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>What we provide</th>
+<th>What the other team can do</th>
+<th>Estimated setup time</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Public API with API keys</strong></td>
+<td>Create plans, add ideas and read results from their own app</td>
+<td>About 10 minutes</td>
+</tr>
+<tr>
+<td><strong>Webhooks</strong></td>
+<td>Receive a notification when a plan is confirmed or a bill is settled</td>
+<td>About 10 minutes</td>
+</tr>
+<tr>
+<td><strong><code>&lt;group-poll&gt;</code> web component</strong></td>
+<td>Add a live vote to their website with one line of HTML</td>
+<td>About 5 minutes</td>
+</tr>
+<tr>
+<td><strong><code>fairsplit</code> package</strong> (npm and Go)</td>
+<td>Use our bill split, minimum payments and UPI link functions</td>
+<td>About 5 minutes</td>
+</tr>
+<tr>
+<td><strong><code>chat2plan</code> package</strong> (Go and npm command-line tool)</td>
+<td>Use our WhatsApp chat parser</td>
+<td>About 5 minutes</td>
+</tr>
+<tr>
+<td><strong>MCP server</strong> (Go)</td>
+<td>Let AI assistants such as Claude or ChatGPT create group plans or split bills</td>
+<td>About 10 minutes</td>
+</tr>
+</tbody></table></div>
+<p><strong>Possible combinations with other domains:</strong></p>
+<ul>
+<li><strong>Cybersecurity or blockchain team:</strong> their verification or record system can store our payment records.</li>
+<li><strong>Cloud team:</strong> their deployment or scaling setup can run our Go service.</li>
+<li><strong>AI/ML team:</strong> their model can improve our suggested ideas, or our chat parser can be used in their app.</li>
+</ul>
+<p>This also follows our senior&#39;s advice to make the main part of the project reusable as a package.</p>
+<hr>
+<h2 id="22-list-of-screens"><span class="sec">22</span><span>List of screens</span></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Screen</th>
+<th>Main content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Home</td>
+<td>&quot;Create a plan&quot; button, &quot;Import a WhatsApp chat&quot; button, short explanation of the steps</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Create plan</td>
+<td>Plan name, approximate date, minimum and maximum members, total cost (optional)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Join plan</td>
+<td>Name field, 5 optional interest questions</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Plan page</td>
+<td>Step indicator (Propose, Decide, Pay, Confirm), idea cards, deadlines, each member&#39;s status</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Chat import</td>
+<td>File upload, progress, list of ideas found</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Voting</td>
+<td>&quot;Love it&quot;, &quot;Okay&quot; and &quot;No&quot; for each idea, veto option, results after voting</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Private budget</td>
+<td>Budget amount, condition options, a note that other members cannot see this information</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Availability</td>
+<td>Heatmap grid, highlighted best slot, required members option</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Voice room</td>
+<td>Voice call, 5-minute timer, plan updates during the call</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Advance payment</td>
+<td>Progress bar, current share per member, &quot;Join and pay&quot; button, deadline countdown</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Plan confirmed</td>
+<td>Final plan details, add to calendar, share to WhatsApp</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Event day</td>
+<td>Schedule, members&#39; arrival times, &quot;I will be late&quot; button, shared photos, live video</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Bill split</td>
+<td>Bill photo, list of items, item selection, members who selected each item</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Settle</td>
+<td>Payments each member must make, with UPI buttons and payment status</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Event summary</td>
+<td>Video preview and download</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Venue dashboard (additional)</td>
+<td>Anonymous group requests and an option to send an offer</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="23-ui-and-ux-design"><span class="sec">23</span><span>UI and UX design</span></h2>
+<h3 id="231-visual-style">23.1 Visual style</h3>
+<ul>
+<li><strong>Overall look:</strong> bright and friendly, with large rounded cards and clear outlines. The design should feel suitable for friends planning an outing, not for a bank.</li>
+<li><strong>Colours:</strong> one main colour (violet) for primary actions and confirmation, green for &quot;within budget&quot; and &quot;paid&quot;, orange for &quot;above budget&quot; and &quot;waiting&quot;, and a light background. Dark mode is also supported.</li>
+<li><strong>Fonts:</strong> a bold, rounded font for headings (for example, Unbounded) and a clear font for body text (for example, Poppins).</li>
+<li><strong>Mobile first:</strong> most members will open the link from WhatsApp on a phone. Buttons are at least 44 pixels high, each screen has one main action, and the main navigation is at the bottom of the screen.</li>
+</ul>
+<h3 id="232-important-interactions">23.2 Important interactions</h3>
+<ul>
+<li><strong>Plan confirmation:</strong> the progress bar fills, the phone vibrates, and the plan status changes to &quot;Confirmed&quot;.</li>
+<li><strong>Lower share:</strong> when a new member pays, the share per member updates with a short animation.</li>
+<li><strong>Bill selection:</strong> small profile circles appear on each item as members select it.</li>
+<li><strong>Chat import:</strong> the website shows progress while it reads the messages, then displays the ideas it found.</li>
+</ul>
+<h3 id="233-design-rules">23.3 Design rules</h3>
+<ul>
+<li>Each screen clearly shows what the member needs to do next.</li>
+<li>All deadlines are always visible.</li>
+<li>Budget values are never shown to other members. Reminders are polite, and the website does not publicly highlight members who have not paid.</li>
+<li>Pages load quickly on slow internet: small page size and no large images on the first load.</li>
+<li>Accessibility: good colour contrast, readable text sizes, support for screen readers, and information is never shown by colour alone.</li>
+</ul>
+<hr>
+<h2 id="24-ppt-round-1-content-for-the-6-slides"><span class="sec">24</span><span>PPT Round 1: content for the 6 slides</span></h2>
+<p>The official template allows a maximum of 6 slides:</p>
+<ol>
+<li>Team details and problem statement</li>
+<li>Problem analysis and market pain points</li>
+<li>Solution overview and key features</li>
+<li>Technical architecture, tech stack and innovation</li>
+<li>Impact, measurable outcomes and scalability</li>
+<li>Diagrams and wireframes (optional)</li>
+</ol>
+<p>The judging criteria are <strong>Problem, Solution, Innovation, Feasibility and Impact.</strong></p>
+<p>Suggestion: keep the text on each slide short and use the speaker notes to explain the details.</p>
+<h3 id="slide-1-team-details-and-problem-statement">Slide 1: Team details and problem statement</h3>
+<ul>
+<li><strong>Team:</strong> [Team name] · Team ID [ID] · Team leader [Name] · Members [Names]</li>
+<li><strong>Domain:</strong> Web and Product Development</li>
+<li><strong>Problem statement:</strong> A website where a group can propose event ideas, vote, split costs, and finalize plans without endless group-chat back-and-forth.</li>
+<li><strong>Our solution in one sentence:</strong> A website where a group suggests ideas, votes, chooses a time and pays their shares in advance, and the plan is confirmed automatically when enough members have paid.</li>
+</ul>
+<h3 id="slide-2-problem-analysis-and-market-pain-points">Slide 2: Problem analysis and market pain points</h3>
+<ul>
+<li><strong>Heading:</strong> Three main reasons group plans fail</li>
+<li><strong>1. Discussion does not lead to a decision.</strong> Group chats have many messages and no deadline. 42% of people say managing group chats feels like a part-time job, and 75% have muted a group chat.</li>
+<li><strong>2. Members agree without commitment.</strong> 75% of people say friends have cancelled plans with them.</li>
+<li><strong>3. Collecting money is uncomfortable.</strong> 76% of Gen Z respondents who paid for a group expense were not fully paid back. 20% avoided plans to avoid conversations about repayment.</li>
+<li><strong>Market gap:</strong> Poll apps, scheduling tools and expense apps each solve one part. None connect the vote with payment. Since October 2025, UPI also does not allow sending money requests to friends.</li>
+<li><strong>Speaker note:</strong> show a screenshot of a real group chat with many messages and no final decision.</li>
+</ul>
+<h3 id="slide-3-solution-overview-and-key-features">Slide 3: Solution overview and key features</h3>
+<ul>
+<li><strong>Heading:</strong> One link for the complete process, with no app installation</li>
+<li><strong>Propose:</strong> members add ideas, or upload the WhatsApp chat and the website finds the ideas already discussed.</li>
+<li><strong>Decide:</strong> Availability Heatmap, Fair Voting (hidden results until you vote, one veto, deadline, tie-breaker) and Private Budget Limits.</li>
+<li><strong>Pay and confirm (USP):</strong> members join by paying their share. The payment is held until the minimum number of members pay. If the minimum is not reached, all payments are released automatically. The share per member decreases when more members join.</li>
+<li><strong>Discuss by voice:</strong> a 5-minute voice room that adds ideas and decisions to the plan automatically.</li>
+<li><strong>Split the bill:</strong> scan the bill, each member selects their items, settle with the minimum number of UPI payments.</li>
+<li><strong>After the event:</strong> Event Day Page and an Event Summary Video.</li>
+</ul>
+<h3 id="slide-4-technical-architecture-tech-stack-and-innovation">Slide 4: Technical architecture, tech stack and innovation</h3>
+<ul>
+<li><strong>Diagram:</strong> use the overview diagram from Section 17.1.</li>
+<li><strong>Tech stack:</strong> Next.js and Tailwind CSS (frontend), Go (backend, WebSocket, background jobs), PostgreSQL, Groq AI (gpt-oss, Qwen vision, Whisper), LiveKit (voice and video), Razorpay test mode and UPI links, OpenStreetMap.</li>
+<li><strong>Running cost:</strong> ₹0. Every service is used on a free plan.</li>
+<li><strong>Innovation:</strong><ol>
+<li>The vote is connected to payment: a plan is confirmed only when a minimum number of members pay, using UPI and Razorpay.</li>
+<li>WhatsApp Chat Import: ideas are created from an exported group chat.</li>
+<li>Private Budget Limits: the group sees which ideas are affordable for everyone, without seeing individual budgets.</li>
+<li>Voice Discussion Room: speech is converted into plan updates, and the speaker is identified without extra AI.</li>
+<li>Public API, web component and packages for easy integration in the Convergence Round.</li>
+</ol>
+</li>
+<li><strong>AI rule:</strong> our code makes the decisions, AI reads and writes text, and members approve important actions.</li>
+</ul>
+<h3 id="slide-5-impact-measurable-outcomes-and-scalability">Slide 5: Impact, measurable outcomes and scalability</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Current situation (group chat)</th>
+<th>Target with our website</th>
+<th>How we measure it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Time from first message to a fixed plan</td>
+<td>Several days</td>
+<td>Under 1 hour</td>
+<td>Timestamps in the event log</td>
+</tr>
+<tr>
+<td>Effort per member</td>
+<td>Reading and sending many messages</td>
+<td>Under 20 clicks per member</td>
+<td>Click count in the app</td>
+</tr>
+<tr>
+<td>Members who agree but do not attend</td>
+<td>[X]% (from our college survey, Section 29)</td>
+<td>Very low, because members pay in advance</td>
+<td>Paid members compared with attendance</td>
+</tr>
+<tr>
+<td>Time to recover shared money</td>
+<td>Days or weeks</td>
+<td>The same day</td>
+<td>Settlement timestamps</td>
+</tr>
+<tr>
+<td>Plans that actually take place</td>
+<td>Low</td>
+<td>Most confirmed plans</td>
+<td>Confirmed plans compared with created plans</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li><strong>Scalability:</strong> Go handles thousands of live connections on one server. The server does not store session data in memory, so more servers can be added when needed. PostgreSQL uses indexes, and background jobs continue after restarts.</li>
+<li><strong>Business model:</strong> free for friend groups. Revenue from venues (a fee for each confirmed group booking) and a small fee on advance payments for large plans such as trips.</li>
+</ul>
+<h3 id="slide-6-wireframes-and-user-journey">Slide 6: Wireframes and user journey</h3>
+<ul>
+<li>Four phone screens side by side: plan page, voting, advance payment (progress bar) and bill split.</li>
+<li>Below them, the user journey: Propose → Decide → Pay → Confirm → Remind → Event day → Split the bill → Event summary.</li>
+<li>Final line: <strong>&quot;Existing apps record votes. Our website confirms a plan only when members commit by paying.&quot;</strong></li>
+</ul>
+<hr>
+<h2 id="25-demo-script-for-round-2-5-minutes"><span class="sec">25</span><span>Demo script for Round 2 (5 minutes)</span></h2>
+<p><strong>Before the demo:</strong> four phones are signed in as four members, one extra phone is ready for a judge, the Go server is running, and the demo data is loaded.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Time</th>
+<th>What we show</th>
+<th>What we say</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0:00</td>
+<td>A screenshot of a real group chat with many messages</td>
+<td>&quot;This is our group chat from last week. It has 212 messages about a weekend plan, and the plan did not happen.&quot;</td>
+</tr>
+<tr>
+<td>0:20</td>
+<td>Upload the chat file. Four idea cards appear</td>
+<td>&quot;The website read the chat and created four idea cards, with the name of the person who suggested each idea.&quot;</td>
+</tr>
+<tr>
+<td>0:50</td>
+<td>Members enter private budgets. One idea shows &quot;Above the budget of 2 members&quot;</td>
+<td>&quot;Each member enters a budget privately. The group sees which ideas are affordable, but not who entered which amount.&quot;</td>
+</tr>
+<tr>
+<td>1:10</td>
+<td>Fair Voting with hidden results. The Availability Heatmap highlights Saturday 6 pm</td>
+<td>&quot;Results are hidden until a member votes, so early votes do not influence others. The heatmap shows the time when most members are free.&quot;</td>
+</tr>
+<tr>
+<td>1:40</td>
+<td>Voice room: two members speak for 30 seconds. The plan updates</td>
+<td>&quot;We discussed the plan by voice, and the website added our ideas and votes automatically.&quot;</td>
+</tr>
+<tr>
+<td>2:20</td>
+<td>Advance payment: 5 of 6 members have paid. A 7th member joins and the share decreases. The judge&#39;s phone pays the last share</td>
+<td>&quot;Each member joins by paying their share. The payment is held, not charged. The judge is the final required member.&quot;</td>
+</tr>
+<tr>
+<td>2:50</td>
+<td>The plan status changes to &quot;Confirmed&quot; on all phones. The final plan page, calendar invite and WhatsApp share are shown</td>
+<td>&quot;The plan is confirmed. The money is collected, and nobody had to remind anyone.&quot;</td>
+</tr>
+<tr>
+<td>3:20</td>
+<td>Another plan passes its deadline without enough members. All members see that their payment was released</td>
+<td>&quot;If the minimum number of members is not reached, every payment is released automatically.&quot;</td>
+</tr>
+<tr>
+<td>3:40</td>
+<td>Bill split: scan a real bill, four phones select items, GST is divided, three UPI buttons appear</td>
+<td>&quot;Each member selects their own items. The group settles with three payments instead of nine.&quot;</td>
+</tr>
+<tr>
+<td>4:20</td>
+<td>Event Summary Video plays</td>
+<td>&quot;After the event, the website creates a short summary video.&quot;</td>
+</tr>
+<tr>
+<td>4:40</td>
+<td>Slide: public API, <code>&lt;group-poll&gt;</code> component, <code>fairsplit</code> package, MCP server, ₹0 running cost</td>
+<td>&quot;The complete system runs on free services, and other applications can use our features through the API and packages.&quot;</td>
+</tr>
+<tr>
+<td>4:55</td>
+<td>Closing</td>
+<td>&quot;Our website connects voting with payment, so a plan is confirmed only when members commit.&quot;</td>
+</tr>
+</tbody></table></div>
+<p><strong>Backup:</strong> a &quot;Demo mode&quot; button runs the same steps with saved data if the internet connection fails. We will also record a backup video before the demo.</p>
+<hr>
+<h2 id="26-business-model-and-impact"><span class="sec">26</span><span>Business model and impact</span></h2>
+<h3 id="261-revenue">26.1 Revenue</h3>
+<ul>
+<li><strong>Friend groups use the website for free.</strong> Each plan invites 5 to 10 people, which helps the website grow.</li>
+<li><strong>Venue offers:</strong> cafes, bowling alleys, turfs, gaming zones and resorts pay a small fee for each confirmed group booking. Venues benefit because members have already paid, so fewer people fail to arrive.</li>
+<li><strong>Fee on large plans:</strong> a small fee on advance payments above a set amount, for example for trips, farewells and fests.</li>
+<li><strong>College clubs (future):</strong> a plan for clubs with member lists, sponsor offers and simple accounts for events.</li>
+</ul>
+<h3 id="262-growth">26.2 Growth</h3>
+<ul>
+<li>One member creates a plan, and 8 friends open the link. Some of them create their own plans later.</li>
+<li>Members can share Event Summary Videos on Instagram and WhatsApp.</li>
+<li>The WhatsApp link preview shows the current vote results, which encourages members to open the link.</li>
+</ul>
+<h3 id="263-impact">26.3 Impact</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>User</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Friend groups</td>
+<td>More plans take place, and there are fewer disagreements about money</td>
+</tr>
+<tr>
+<td>The organiser</td>
+<td>No need to follow up with members for answers or payments</td>
+</tr>
+<tr>
+<td>Members with a limited budget</td>
+<td>They can share their limits privately and still be included</td>
+</tr>
+<tr>
+<td>Venues</td>
+<td>Group bookings where members have already paid</td>
+</tr>
+<tr>
+<td>College clubs</td>
+<td>Money collected in advance, with clear records</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="27-pitch-guidelines-and-judge-questions"><span class="sec">27</span><span>Pitch guidelines and judge questions</span></h2>
+<h3 id="271-advice-from-our-senior-previous-winner">27.1 Advice from our senior (previous winner)</h3>
+<ol>
+<li><strong>Build a good user interface.</strong></li>
+<li><strong>Have a clear USP</strong> (ours: a plan is confirmed only when a minimum number of members pay in advance).</li>
+<li><strong>Make the main part reusable</strong> as an npm or Go package or SDK (ours: <code>fairsplit</code>, <code>chat2plan</code>, <code>&lt;group-poll&gt;</code> and the MCP server).</li>
+<li><strong>Use AI in a meaningful way</strong> (ours: WhatsApp Chat Import, bill reading and the Voice Discussion Room).</li>
+<li><strong>Be confident and answer positively.</strong> Do not use negative sentences.</li>
+</ol>
+<h3 id="272-how-we-answer-questions">27.2 How we answer questions</h3>
+<p><strong>Phrases we use:</strong></p>
+<ul>
+<li>&quot;Good question. We handle that with…&quot;</li>
+<li>&quot;Yes, and in addition…&quot;</li>
+<li>&quot;That is our next step, and our design already supports it because…&quot;</li>
+</ul>
+<p><strong>Phrases we avoid:</strong></p>
+<ul>
+<li>&quot;We did not implement that.&quot;</li>
+<li>&quot;It does not work yet.&quot;</li>
+<li>&quot;We did not have time.&quot;</li>
+<li>&quot;It is only fake data.&quot;</li>
+</ul>
+<h3 id="273-possible-judge-questions-and-answers">27.3 Possible judge questions and answers</h3>
+<p><strong>&quot;How is this different from WhatsApp polls and Splitwise?&quot;</strong>
+WhatsApp polls record votes, and Splitwise records expenses after the money is spent. Our website connects the two: after the vote, members join by paying their share, and the plan is confirmed only when enough members have paid. This is the step that existing apps do not provide.</p>
+<p><strong>&quot;Why would members pay before the plan is confirmed?&quot;</strong>
+The payment is only held, not charged. If the plan is not confirmed, the payment is released automatically. Also, the share per member decreases when more members join, so members have a reason to invite others instead of dropping out.</p>
+<p><strong>&quot;What if a member cannot afford an idea?&quot;</strong>
+Each member sets a private budget. Ideas that are above any member&#39;s budget are marked before voting, so the group can choose an idea that every member can afford. No member&#39;s budget is shown to others.</p>
+<p><strong>&quot;Is it safe to upload a WhatsApp chat?&quot;</strong>
+The chat file is processed once and deleted. Only the idea cards are saved. Budget amounts mentioned in the chat are shown only to the member who mentioned them. We also check uploaded text with a safety model before it is sent to the AI.</p>
+<p><strong>&quot;Is it allowed to hold money in this way?&quot;</strong>
+Yes. It is a standard payment feature, also used by hotels and cab services. In the demo, we use Razorpay&#39;s manual capture in test mode. For the real product, we will use UPI Reserve Pay, which RBI and NPCI introduced to block money in the customer&#39;s own account for up to 90 days.</p>
+<p><strong>&quot;Why not send UPI requests to members?&quot;</strong>
+Since 1 October 2025, NPCI does not allow person-to-person collect requests, to reduce fraud. Therefore we provide a payment link with the amount already filled in, and the website sends reminders.</p>
+<p><strong>&quot;Why did you choose Go?&quot;</strong>
+Our website has many live connections and timers: votes, item selections, deadlines and refunds. Go handles many of these at the same time with low memory use. LiveKit, which we use for voice, is also built in Go.</p>
+<p><strong>&quot;What does it cost to run?&quot;</strong>
+Nothing. All services are on free plans: Groq, Neon, Vercel, Render, LiveKit, Cloudinary, OpenStreetMap and Razorpay test mode. UPI payment links do not need a payment gateway.</p>
+<p><strong>&quot;What if the AI reads the bill incorrectly?&quot;</strong>
+The AI only reads the bill. Our code checks that the items add up to the bill total and highlights any line that does not match. Each member also selects their own items, so every member checks their part.</p>
+<p><strong>&quot;What if the free Groq limit is reached?&quot;</strong>
+We save AI answers, divide work between three models, and every AI feature has a free backup: keyword matching for chats, Tesseract.js for bills and typed notes for the voice room.</p>
+<p><strong>&quot;How will this scale?&quot;</strong>
+The Go servers do not keep session data in memory, so we can run several servers. PostgreSQL uses indexes, and background jobs continue after restarts. The same design works for a small number of plans or for many thousands.</p>
+<p><strong>&quot;How is this different from Partiful or Howbout?&quot;</strong>
+These apps focus on invitations and calendars. Marking &quot;Going&quot; has no commitment, and they do not handle payments. Our website covers the full process from ideas to payment, and it is designed for India: UPI payments, WhatsApp chat import, support for Hindi and English speech, and no app installation.</p>
+<hr>
+<h2 id="28-24-hour-build-plan-and-team-roles"><span class="sec">28</span><span>24-hour build plan and team roles</span></h2>
+<h3 id="281-priorities">28.1 Priorities</h3>
+<ul>
+<li><strong>P0 (required by the problem statement):</strong><ul>
+<li>Create and join a plan, and idea cards.</li>
+<li>Fair Voting with a deadline, the Availability Heatmap and Private Budget Limits.</li>
+<li>Advance payment with Razorpay test mode.</li>
+<li>Expenses, minimum payments and UPI links.</li>
+<li>The final plan page with a calendar invite.</li>
+<li>Live updates through WebSocket.</li>
+</ul>
+</li>
+<li><strong>P1 (important features):</strong> WhatsApp Chat Import, Receipt Scanner with Groq vision, Voice Discussion Room, Event Summary Video, live WhatsApp link preview.</li>
+<li><strong>P2 (additional features):</strong> Event Day Page, Fair Meeting Location, Suggested Ideas, Venue Offers, Open Seats, plan question box, packages on npm, MCP server.</li>
+</ul>
+<p><strong>Rule:</strong> complete all P0 features before starting P1. A simple feature that works is better than a complex feature that does not.</p>
+<h3 id="282-team-roles-for-4-members-for-3-members-combine-roles-a-and-b">28.2 Team roles (for 4 members; for 3 members, combine roles A and B)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Responsibilities</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>A. Frontend: main screens</strong></td>
+<td>Next.js setup, design tokens, plan page, voting, heatmap, private budget, payment screen, final plan page</td>
+</tr>
+<tr>
+<td><strong>B. Frontend: additional screens and presentation</strong></td>
+<td>Chat import screen, bill split, settlement, voice room, event day, summary video, PPT and demo video</td>
+</tr>
+<tr>
+<td><strong>C. Go backend</strong></td>
+<td>API, PostgreSQL with sqlc, WebSocket, River jobs, advance payments with Razorpay, settlement calculation, calendar, notifications, deployment</td>
+</tr>
+<tr>
+<td><strong>D. AI, integrations and pitch</strong></td>
+<td>Groq requests with strict JSON, chat parser, bill reading, Whisper for voice, LiveKit tokens, backups, demo data, <code>fairsplit</code> package, demo script</td>
+</tr>
+</tbody></table></div>
+<h3 id="283-tasks-to-complete-before-the-hackathon">28.3 Tasks to complete before the hackathon</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Groq API key (free) for every team member</li>
+<li><input disabled="" type="checkbox"> Razorpay account in test mode, with test keys and manual capture enabled</li>
+<li><input disabled="" type="checkbox"> LiveKit Cloud free project and keys</li>
+<li><input disabled="" type="checkbox"> Neon database, Vercel project, Render service and Cloudinary account</li>
+<li><input disabled="" type="checkbox"> GitHub repository and Docker Compose for local PostgreSQL</li>
+<li><input disabled="" type="checkbox"> A real exported WhatsApp chat (with the friends&#39; permission) and 2 real restaurant bill photos for the demo</li>
+<li><input disabled="" type="checkbox"> The college survey (Section 29), for real numbers in the PPT</li>
+</ul>
+<h3 id="284-timeline-24-hours">28.4 Timeline (24 hours)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Hours</th>
+<th>Goal</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0. Setup</td>
+<td>0 to 1.5</td>
+<td>Repository, database tables, API contract, design tokens, sample data</td>
+</tr>
+<tr>
+<td>1. Core features</td>
+<td>1.5 to 7</td>
+<td>Create and join, idea cards, Fair Voting, heatmap, private budget, WebSocket</td>
+</tr>
+<tr>
+<td>2. Payments</td>
+<td>7 to 12</td>
+<td>Advance payment with Razorpay test mode, deadline job, refunds, expenses, minimum payments, UPI links</td>
+</tr>
+<tr>
+<td>3. Main additional features</td>
+<td>12 to 18</td>
+<td>WhatsApp Chat Import, Receipt Scanner, Voice Discussion Room, final plan page and calendar</td>
+</tr>
+<tr>
+<td>4. Finishing</td>
+<td>18 to 21</td>
+<td>Event Summary Video, WhatsApp link preview, testing on phones, demo mode, Convergence Round preparation</td>
+</tr>
+<tr>
+<td>5. Presentation</td>
+<td>21 to 24</td>
+<td>Practise the 5-minute demo at least 5 times and record a backup video</td>
+</tr>
+</tbody></table></div>
+<p><strong>Surprise technical changes:</strong> the backend is divided into separate modules (Section 17.2), so a change in requirements usually affects only one module.</p>
+<hr>
+<h2 id="29-college-survey-for-real-numbers-in-the-ppt"><span class="sec">29</span><span>College survey (for real numbers in the PPT)</span></h2>
+<p>Create a Google Form (free) and share it in RGIT student groups. Even 50 to 100 responses will make the slides more convincing than global statistics.</p>
+<ol>
+<li>In the last 3 months, how many group plans were discussed in your group chats? (0, 1 to 2, 3 to 5, more than 5)</li>
+<li>How many of these plans actually took place? (none, some, most, all)</li>
+<li>When someone says they will join, how often do they actually attend? (always, usually, sometimes, rarely)</li>
+<li>Have you ever paid for a group and not been fully paid back? (yes, no)</li>
+<li>Have you ever avoided a plan because it was too expensive, without telling the group? (yes, no)</li>
+<li>Would you pay your share in advance if the money is returned automatically when the plan does not happen? (yes, maybe, no)</li>
+</ol>
+<p>Use the results on Slide 2 and Slide 5, for example: &quot;In our survey of [N] RGIT students, [X]% said…&quot;</p>
+<hr>
+<h2 id="30-risks-and-backup-plans"><span class="sec">30</span><span>Risks and backup plans</span></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Possible effect</th>
+<th>Backup plan</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Groq free limit is reached</td>
+<td>AI features stop working</td>
+<td>Saved answers, three models, and a free backup for each AI feature</td>
+</tr>
+<tr>
+<td>Bill photo is not clear</td>
+<td>Items are read incorrectly</td>
+<td>Total check in code, highlighted lines, Tesseract.js backup, manual editing</td>
+</tr>
+<tr>
+<td>Razorpay webhook cannot reach the laptop</td>
+<td>Plan is not confirmed after payment</td>
+<td>Deploy the Go server on Render, or use Cloudflare Tunnel</td>
+</tr>
+<tr>
+<td>Render free server is sleeping</td>
+<td>The first request is slow</td>
+<td>Start the server 10 minutes before the demo, or run it locally</td>
+</tr>
+<tr>
+<td>Internet at the venue fails</td>
+<td>Live features do not work</td>
+<td>Demo mode with saved data, and a mobile hotspot</td>
+</tr>
+<tr>
+<td>A UPI app shows a warning for payment links</td>
+<td>A member cannot pay with one click</td>
+<td>Show a QR code and a &quot;Copy UPI ID and amount&quot; option</td>
+</tr>
+<tr>
+<td>Microphone does not work in the voice room</td>
+<td>No automatic plan updates</td>
+<td>Typed notes, and a pre-recorded voice discussion for the demo</td>
+</tr>
+<tr>
+<td>A WhatsApp chat file has a different format</td>
+<td>Some messages are missed</td>
+<td>Support both Android and iPhone formats, and test with 3 real chat files before the event</td>
+</tr>
+<tr>
+<td>Too many features</td>
+<td>Some features are incomplete</td>
+<td>Follow the P0, P1, P2 order strictly</td>
+</tr>
+<tr>
+<td>Demo data looks unrealistic</td>
+<td>Judges may doubt the solution</td>
+<td>Use real Mumbai places, real prices, a real chat and real bills</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="31-glossary"><span class="sec">31</span><span>Glossary</span></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Advance payment</td>
+<td>Paying your share before the plan is confirmed</td>
+</tr>
+<tr>
+<td>Hold (authorise)</td>
+<td>The payment amount is reserved but not yet taken</td>
+</tr>
+<tr>
+<td>Capture</td>
+<td>Taking a held payment</td>
+</tr>
+<tr>
+<td>Minimum members</td>
+<td>The number of paid members needed to confirm the plan</td>
+</tr>
+<tr>
+<td>UPI Reserve Pay</td>
+<td>A UPI feature that blocks up to ₹10,000 in the customer&#39;s own account for up to 90 days</td>
+</tr>
+<tr>
+<td>Collect request</td>
+<td>A UPI request asking someone to pay. Not allowed between individuals since 1 October 2025</td>
+</tr>
+<tr>
+<td>Anchoring</td>
+<td>The effect where the first opinions shared influence the final decision</td>
+</tr>
+<tr>
+<td>Veto</td>
+<td>A vote that removes an idea. Each member has one per plan</td>
+</tr>
+<tr>
+<td>Strict JSON mode</td>
+<td>A Groq setting that makes the AI answer in an exact data format</td>
+</tr>
+<tr>
+<td>WebSocket</td>
+<td>A connection that sends updates from the server to all screens immediately</td>
+</tr>
+<tr>
+<td>River</td>
+<td>A Go library for running background jobs, such as deadline checks</td>
+</tr>
+<tr>
+<td>Webhook</td>
+<td>A message that another service, such as Razorpay, sends to our server when an event happens</td>
+</tr>
+<tr>
+<td>MCP server</td>
+<td>A standard way for AI assistants such as Claude or ChatGPT to use our features</td>
+</tr>
+<tr>
+<td>Convergence Round</td>
+<td>The round in which two teams add a part of each other&#39;s project to their own</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="32-sources"><span class="sec">32</span><span>Sources</span></h2>
+<p><strong>Hackathon</strong></p>
+<ul>
+<li><a href="https://jamao.in/e/codeastra-2-0-24-hour-offline-hackathon" target="_blank" rel="noopener noreferrer">CodeAstra 2.0 details (Jamao)</a></li>
+<li><a href="https://unstop.com/hackathons/codeastra-20-24-hour-offline-hackathon-association-of-budding-information-technocrats-abit-rgit-1764841" target="_blank" rel="noopener noreferrer">CodeAstra 2.0 on Unstop</a></li>
+<li><a href="https://recursion6.devfolio.co/overview" target="_blank" rel="noopener noreferrer">Recursion 6.0, RGIT CodeCell (a previous RGIT hackathon where AI was required in every project)</a></li>
+</ul>
+<p><strong>The problem</strong></p>
+<ul>
+<li><a href="https://www.securedatarecovery.com/blog/group-messaging-feels-like-job" target="_blank" rel="noopener noreferrer">Secure Data Recovery: group messaging survey</a></li>
+<li><a href="https://theconversation.com/overwhelmed-by-group-chat-messages-youre-not-alone-215879" target="_blank" rel="noopener noreferrer">The Conversation: overwhelmed by group chat messages</a></li>
+<li><a href="https://www.ipsos.com/en-ca/node/1031526" target="_blank" rel="noopener noreferrer">Ipsos: friends cancelling plans survey</a></li>
+<li><a href="https://rethinking65.com/bad-trip-group-expenses-for-shared-experiences-too-often-end-in-nonpayment-avoidance-survey-reveals/" target="_blank" rel="noopener noreferrer">Zelle survey 2026 via Rethinking65: group expenses and nonpayment</a></li>
+<li><a href="https://alvinology.com/2026/09/20/youtrip-survey-finds-1-in-3-singaporeans-have-argued-over-travel-expenses/" target="_blank" rel="noopener noreferrer">YouTrip survey 2026 via Alvinology</a></li>
+<li><a href="https://philsci-archive.pitt.edu/13031" target="_blank" rel="noopener noreferrer">Hartmann and Rafiee Rad: Anchoring in Deliberations</a></li>
+<li><a href="https://hyperleap.ai/blog/whatsapp-statistics-india-2026" target="_blank" rel="noopener noreferrer">Hyperleap: WhatsApp statistics India 2026</a></li>
+</ul>
+<p><strong>Existing solutions</strong></p>
+<ul>
+<li><a href="https://www.tapsmart.com/news/howbout-review/" target="_blank" rel="noopener noreferrer">Howbout review (TapSmart)</a></li>
+<li><a href="https://getfinny.app/blog/splitwise-pricing-2026" target="_blank" rel="noopener noreferrer">Splitwise pricing 2026 (Finny)</a></li>
+<li><a href="https://scanx.trade/stock-market-news/companies/paytm-launches-split-bills-feature-to-simplify-group-expense-tracking/46846893" target="_blank" rel="noopener noreferrer">Paytm Split Bills launch</a></li>
+<li><a href="https://www.producthunt.com/p/planez" target="_blank" rel="noopener noreferrer">PlanEz (Product Hunt)</a></li>
+</ul>
+<p><strong>Payments</strong></p>
+<ul>
+<li><a href="https://www.outlookbusiness.com/news/npci-to-stop-upi-p2p-collect-requests-from-oct-1-to-combat-fraud" target="_blank" rel="noopener noreferrer">NPCI stops P2P collect requests from 1 October 2025 (Outlook Business)</a></li>
+<li><a href="https://www.cashfree.com/docs/payments/upi-reserve-pay/reserve-pay" target="_blank" rel="noopener noreferrer">UPI Reserve Pay (Cashfree documentation)</a></li>
+<li><a href="https://www.pinelabs.com/docs/online-payments/upi-reserve-pay" target="_blank" rel="noopener noreferrer">UPI Reserve Pay (Pine Labs documentation)</a></li>
+<li><a href="https://razorpay.com/docs/payments/payments/capture-settings/" target="_blank" rel="noopener noreferrer">Razorpay payment capture settings</a></li>
+</ul>
+<p><strong>AI, voice and tools</strong></p>
+<ul>
+<li><a href="https://console.groq.com/docs/rate-limits" target="_blank" rel="noopener noreferrer">Groq rate limits (official)</a></li>
+<li><a href="https://console.groq.com/docs/vision" target="_blank" rel="noopener noreferrer">Groq vision (official)</a></li>
+<li><a href="https://nexos.ai/blog/what-is-jev/" target="_blank" rel="noopener noreferrer">Jev guide (nexos.ai)</a></li>
+<li><a href="https://aimlapi.com/models/typesafe-jev-latest" target="_blank" rel="noopener noreferrer">Jev on AI/ML API</a></li>
+<li><a href="https://agentdeals.dev/vendor/livekit" target="_blank" rel="noopener noreferrer">LiveKit free plan 2026</a></li>
+<li><a href="https://kapso.ai/blog/whatsapp-groups-api-state-2026" target="_blank" rel="noopener noreferrer">WhatsApp Groups API in 2026 (Kapso): available only to Official Business Accounts, with a limit of 8 members, so we use share links instead</a></li>
+<li><a href="https://pypi.org/project/whatsapp-chat-analyzer/" target="_blank" rel="noopener noreferrer">WhatsApp chat export parser reference (PyPI)</a></li>
+</ul>
+
+    </article>
+    <p class="foot">This page is built from <code>allaboutourproject.md</code> in the project folder. Edit that file, and ask Claude to rebuild this page.</p>
+  </main>
+</div>
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var heads = Array.prototype.slice.call(document.querySelectorAll('.prose h2[id]'));
+  if (!('IntersectionObserver' in window) || !heads.length) return;
+  var byId = {};
+  links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+  var current = null;
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting || current === entry.target.id) return;
+      current = entry.target.id;
+      links.forEach(function (a) { a.removeAttribute('aria-current'); });
+      var link = byId[current];
+      if (link) link.setAttribute('aria-current', 'true');
+    });
+  }, { rootMargin: '0px 0px -70% 0px', threshold: 0 });
+  heads.forEach(function (h) { observer.observe(h); });
+})();
+</script>
+</body>
+</html>
